@@ -33,13 +33,21 @@ flow transactions send ./transactions/test/transferFlow.cdc 100.0 0x01cf0e2f2f71
 As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.json`, directly execute the scripts above works well and we can use account `emulator-Alice` in emulator to make operation now.
 
 ## Basic Tools
-Note that remember to switch the import address 
+Note that remember to switch the import address when swiching between `emulator` and `testnet`.
+
+To use the Omnichain functions of Dante protocol, there needs to be a `ReceivedMessageVault` resource and a `SentMessageVault` resource. We have deployed a globle resource at `0x0xa8913f4f31ead2ee`, with public link `sentMessageVault` and `receivedMessageVault`.  
+
+To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure, try the following tools. Example of usage can be found in [opsh](./opsh);
 
 ### Transactions
-
+* [initSender](./transactions/initSender.cdc) creates account bound `SentMessageVault` and registered to `CrossChain`
+* [initRecver](./transactions/initRecver.cdc) creates account bound `ReceivedMessageVault` and registered to `CrossChain`
+* [destroySender](./transactions/destroySender.cdc) clear the related resource
+* [destroyRecver](./transactions/destroyRecver.cdc) clear the related resource
+* [transferFlow](./transactions/transferFlow.cdc) Flow token transferring tool
 
 ### Scripts
-
+* [checkRegistered](./scripts/checkRegistered.cdc) check the registered `ReceivedMessageVault`s and `SentMessageVault`s.   
 
 ## API
 ### Message Protocol
