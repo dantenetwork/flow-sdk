@@ -1,8 +1,8 @@
-// SentMessageContract from 0xf8d6e0586b0a20c7;
-//import CrossChain from 0xf8d6e0586b0a20c7;
+import SentMessageContract from 0xf8d6e0586b0a20c7;
+import CrossChain from 0xf8d6e0586b0a20c7;
 
-import SentMessageContract from 0xa8913f4f31ead2ee;
-import CrossChain from 0xa8913f4f31ead2ee;
+//import SentMessageContract from 0xa8913f4f31ead2ee;
+//import CrossChain from 0xa8913f4f31ead2ee;
 
 transaction () {
 

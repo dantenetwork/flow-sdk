@@ -5,9 +5,9 @@ More details can be seen at [API](#api), and we provide two typical examples at 
 ## Environment
 ### Deployment
 #### Testnet
-Officially, we have deployed the smart contract at `0x0xa8913f4f31ead2ee` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
+Officially, we have deployed the smart contract at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
 
-Note that the `testnet-account` in [flow.json](./flow.json) has already been used, which is just for dev-testing. So remember to create your own account to make operation on Testnet. You can follow this [tutorial](https://developers.flow.com/tools/flow-cli/create-accounts) to create a new account on Testnet and fund faucet [here](https://testnet-faucet.onflow.org/fund-account). 
+**Note that the `testnet-account` in [flow.json](./flow.json) is just for dev-testing, which may have already been used. So remember to create your own account to make operation on Testnet. You can follow this [tutorial](https://developers.flow.com/tools/flow-cli/create-accounts) to create a new account on Testnet and fund faucet [here](https://testnet-faucet.onflow.org/fund-account)** 
 
 #### Emulator
 To use emulator for testing, we need to clone the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts/tree/main), start emulator, and deploy first:
@@ -35,7 +35,7 @@ As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.jso
 ## Basic Tools
 Note that remember to switch the import address when swiching between `emulator` and `testnet`.
 
-To use the Omnichain functions of Dante protocol, there needs to be a `ReceivedMessageVault` resource and a `SentMessageVault` resource. We have deployed a globle resource at `0x0xa8913f4f31ead2ee`, with public link `sentMessageVault` and `receivedMessageVault`.  
+To use the Omnichain functions of Dante protocol, there needs to be a `ReceivedMessageVault` resource and a `SentMessageVault` resource. We have deployed a **global** resource at `0x5f37faed5f558aca`, with public link `sentMessageVault` and `receivedMessageVault`.  
 
 To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure, try the following tools. Example of usage can be found in [opsh](./opsh);
 
@@ -61,14 +61,14 @@ The public sections of Omnichain messages related to dApp development are define
 * Creation and Destroying
 ```sh
 # create account bound `ReceivedMessageVault`
-flow transactions send ./transactions/initRecver.cdc -n testnet --signer <your account>
+flow transactions send ./transactions/initRecver.cdc --signer <your account> -n testnet
 
 # clear the `ReceivedMessageVault` resource
-flow transactions send ./transactions/destroyRecver.cdc -n testnet --signer <your account>
+flow transactions send ./transactions/destroyRecver.cdc --signer <your account> -n testnet
 ```
 * Resource Interface
 
-* [Callee Interface](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L19) provides a public interface for user-defined resources to receive invocations outside, the usage of which can be seen in [examples]().
+* [Callee Interface](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L19) provides a public interface for user-defined resources to receive invocations outside, the usage of which can be seen in [examples](./exampleApp/greetings/contracts/Greetings.cdc#L17).
 
 * (*Can be ignored by smart contract builders*)The [Public Interface](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L8) of `ReceivedMessageVault` mainly includes `getNextMessageID` and `submitRecvMessage`, both of which is for off-chain routers.
 
@@ -77,17 +77,32 @@ flow transactions send ./transactions/destroyRecver.cdc -n testnet --signer <you
 * Creation and Destroying
 ```sh
 # create account bound `SentMessageVault`
-flow transactions send ./transactions/initSender.cdc -n testnet --signer <your account>
+flow transactions send ./transactions/initSender.cdc --signer <your account> -n testnet
 
 # clear the `SentMessageVault` resource
-flow transactions send ./transactions/destroySender.cdc -n testnet --signer <your account>
+flow transactions send ./transactions/destroySender.cdc --signer <your account> -n testnet
 ```
 * (*Can be ignored by smart contract builders*)The [Public Interface](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L146) of `SentMessageVault` mainly includes `getAllMessages()` and `getMessageById(messageId: UInt128)`, both of which is for off-chain routers.
 
 #### Submitter
 * Creation and Destroying
-* Resource Interface
-* Public Interface
+```sh
+cd exampleApp/greetings
+
+# create account bound `Submitter`
+flow transactions send ./transactions/initSubmitter.cdc --signer <your account> -n testnet
+
+# clear the `Submitter` resource
+flow transactions send ./transactions/destroySubmitter.cdc --signer <your account> -n testnet
+
+```
+
+* The [Resource Interface](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L52) of `Submitter` is `submitWithAuth`, which is responsible for submit messages or invocations out. The usage of `submitWithAuth` can be seen in [example](./exampleApp/greetings/contracts/Greetings.cdc#L58):
+    * @param `outContent`: Struct [msgToSubmit](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L7)
+    * @param `acceptorAddr`: The owner address of the `SentMessageVault` resource, which can be the global one or created by yourself.
+    * @param `alink`: the public link of the `SentMessageVault` resource, which is default to be *sentMessageVault*
+    * @param `oSubmitterAddr`: The owner address of the `Submitter`
+    * @param `slink`: the `Submitter`'s public link, which is default to be *msgSubmitter*
 
 ### Omnichain NFT
 The usage of the Omnichain NFT Infrastructure is quite convenient, and you can see more details [here](https://github.com/dantenetwork/cadence-contracts/tree/crypto-dev/omniverseNFT).
@@ -106,8 +121,30 @@ The usage of the Omnichain NFT Infrastructure is quite convenient, and you can s
 
 # Examples
 ## Classic `Greetings` Case
+[Greetings](./exampleApp/greetings/contracts/Greetings.cdc) is a calssic example of how to use Dante Protocol to build Omnichain dApps. It shows the simplest case of sending message out and receiving message from outside.  
+You can try it as follows:
+* Initiallize your own `ReceivedMessageVault` and `SentMessageVault` as mentioned above: [recver](#receivedmessagevault) and [sender](#sentmessagevault). Or use the global ones.
+* Initiallize your own `Submitter` as [mentioned above](#submitter). Or use the global one.
+* The address of `Greetings` contract deployed on Testnet is `0x86fc6f40cd9f9c66`. 
+* Deploy `Greetings` if you are in emulator environment.
+```sh
+flow project deploy --update
+```
+### Send message out
+* Sending
+```sh
+
+flow transactions send ./transactions/sendMessageOut.cdc <`SentMessageVault` address> --signer <your account> -n testnet
+```
+* (to be done) Wait other chain received the message
+
+### Receive message from
+* (to be done) Wait message from other chains
+* Check if received
+```sh
+flow scripts execute ./scripts/getRecvedGreetings.cdc
+```
 
 ## Classic `Cooperate Computation` Case
 
-# Test
 

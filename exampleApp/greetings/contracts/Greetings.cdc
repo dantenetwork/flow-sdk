@@ -1,0 +1,69 @@
+//import SentMessageContract from 0xf8d6e0586b0a20c7;
+//import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
+//import MessageProtocol from 0xf8d6e0586b0a20c7;
+
+import SentMessageContract from 0x5f37faed5f558aca;
+import ReceivedMessageContract from 0x5f37faed5f558aca;
+import MessageProtocol from 0x5f37faed5f558aca;
+
+pub contract Greetings {
+    pub resource GreetingRecver: ReceivedMessageContract.Callee {
+        pub let recvedGreetings: [String];
+
+        init() {
+            self.recvedGreetings = [];
+        }
+        
+        pub fun callMe(data: MessageProtocol.MessagePayload) {
+            var greetingMessage = "";
+            for ele in data.items {
+                greetingMessage = greetingMessage.concat(ele.value as! String).concat("-");
+            }
+
+            greetingMessage = greetingMessage.concat(self.recvedGreetings.length.toString());
+
+            self.recvedGreetings.append(greetingMessage);
+        }
+    }
+
+    init() {
+        self.account.save(<- create GreetingRecver(), to: /storage/GreetingRecver);
+        self.account.link<&{ReceivedMessageContract.Callee}>(/public/GreetingRecver, target: /storage/GreetingRecver)
+    }
+    
+    pub fun sendGreeting(greetingMessage: String, senderAddr: Address, link: String) {
+        let submitterRef = self.account.borrow<&SentMessageContract.Submitter>(from: /storage/msgSubmitter)!;
+
+        // Message params
+        let sqos = MessageProtocol.SQoS()
+        let callType: UInt8 = 1
+        let callback: [UInt8] = []
+        let commitment: [UInt8] = []
+        let answer: [UInt8] = []
+
+        let data = MessageProtocol.MessagePayload()
+        
+        let greeting = MessageProtocol.createMessageItem(name: "greeting", type: MessageProtocol.MsgType.cdcString, value: greetingMessage);
+        data.addItem(item: greeting!);
+
+        let msg = SentMessageContract.msgToSubmit(toChain: "POLKADOT", 
+                                                    sqos: sqos, 
+                                                    contractName: "Greeting on Polkadot".utf8, 
+                                                    actionName: "Receive Greetings".utf8, 
+                                                    data: data, 
+                                                    callType: callType, 
+                                                    callback: callback, 
+                                                    commitment: commitment, 
+                                                    answer: answer);
+        submitterRef.submitWithAuth(msg, 
+                                    acceptorAddr: senderAddr, 
+                                    alink: "sentMessageVault", 
+                                    oSubmitterAddr: self.account.address, 
+                                    slink: link);
+    }
+
+    pub fun getRecvedGreetings(): [String] {
+        let recverRef = self.account.borrow<&GreetingRecver>(from: /storage/GreetingRecver)!;
+        return recverRef.recvedGreetings;
+    }
+}

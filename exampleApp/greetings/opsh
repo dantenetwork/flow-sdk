@@ -1,0 +1,15 @@
+
+# init submitter resource
+flow transactions send ./transactions/initSubmitter.cdc --signer emulator-Alice
+
+flow transactions send ./transactions/initSubmitter.cdc -n testnet --signer testnet-account
+
+# destroy submitter resource
+flow transactions send ./transactions/destroySubmitter.cdc --signer emulator-Alice
+
+flow transactions send ./transactions/destroySubmitter.cdc -n testnet --signer testnet-account
+
+# operations
+flow scripts execute ./scripts/getRecvedGreetings.cdc
+
+flow transactions send ./transactions/sendMessageOut.cdc 0x01cf0e2f2f715450
