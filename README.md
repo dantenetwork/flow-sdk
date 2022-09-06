@@ -124,7 +124,7 @@ The usage of the Omnichain NFT Infrastructure is quite convenient, and you can s
 [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) is a calssic example of how to use Dante Protocol to build Omnichain dApps. It shows the simplest case of sending message out and receiving message from outside.  
 You can try it as follows:
 * Initiallize your own `ReceivedMessageVault` and `SentMessageVault` as mentioned above: [recver](#receivedmessagevault) and [sender](#sentmessagevault). Or use the global ones.
-* Initiallize your own `Submitter` as [mentioned above](#submitter). Or use the global one.
+* Initiallize your own `Submitter` as [mentioned above](#submitter). 
 * The address of `Greetings` contract deployed on Testnet is `0x86fc6f40cd9f9c66`. 
 * Deploy `Greetings` if you are in emulator environment.
 ```sh
