@@ -1,10 +1,10 @@
-//import SentMessageContract from 0xf8d6e0586b0a20c7;
-//import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
-//import MessageProtocol from 0xf8d6e0586b0a20c7;
+import SentMessageContract from 0xf8d6e0586b0a20c7;
+import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
+import MessageProtocol from 0xf8d6e0586b0a20c7;
 
-import SentMessageContract from 0x5f37faed5f558aca;
-import ReceivedMessageContract from 0x5f37faed5f558aca;
-import MessageProtocol from 0x5f37faed5f558aca;
+//import SentMessageContract from 0x5f37faed5f558aca;
+//import ReceivedMessageContract from 0x5f37faed5f558aca;
+//import MessageProtocol from 0x5f37faed5f558aca;
 
 pub contract Greetings {
     pub resource GreetingRecver: ReceivedMessageContract.Callee {
@@ -14,7 +14,7 @@ pub contract Greetings {
             self.recvedGreetings = [];
         }
         
-        pub fun callMe(data: MessageProtocol.MessagePayload) {
+        pub fun callMe(data: MessageProtocol.MessagePayload, contextID: String) {
             var greetingMessage = "";
             for ele in data.items {
                 greetingMessage = greetingMessage.concat(ele.value as! String).concat("-");
