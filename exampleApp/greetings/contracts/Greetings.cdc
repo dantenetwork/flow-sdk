@@ -14,7 +14,7 @@ pub contract Greetings {
             self.recvedGreetings = [];
         }
         
-        pub fun callMe(data: MessageProtocol.MessagePayload, contextID: String) {
+        pub fun callMe(data: MessageProtocol.MessagePayload) {
             var greetingMessage = "";
             for ele in data.items {
                 greetingMessage = greetingMessage.concat(ele.value as! String).concat("-");

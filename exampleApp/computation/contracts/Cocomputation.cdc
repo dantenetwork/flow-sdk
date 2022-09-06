@@ -18,7 +18,7 @@ pub contract Cocomputation {
             self.link = link;
         }
 
-        pub fun callMe(data: MessageProtocol.MessagePayload, contextID: String) {
+        pub fun callMe(data: MessageProtocol.MessagePayload) {
             if let rst = data.getItem(name: "result") {
                 if let val = rst.value as? UInt32 {
                     self.results.append(val);
@@ -52,8 +52,28 @@ pub contract Cocomputation {
             self.tasks = [];
         }
 
-        pub fun callMe(data: MessageProtocol.MessagePayload, contextID: String) {
+        pub fun callMe(data: MessageProtocol.MessagePayload) {
+            if let context = ContextKeeper.getContext() {
+                if let item = data.getItem(name: "nums") {
+                    var sum: UInt32 = 0;
+                    self.tasks.append(item.value as! [UInt32]);
+                    for ele in item.value as! [UInt32] {
+                        sum = sum + ele;
+                    }
 
+                    let msgPL = MessageProtocol.MessagePayload();
+                    let msgItem = MessageProtocol.createMessageItem(name: "result", 
+                                                                    type: MessageProtocol.MsgType.cdcU32,
+                                                                    value: sum);
+                    msgPL.addItem(item: msgItem!);
+
+                    SDKUtility.sendOut(toChain: context.fromChain, 
+                                        sqos: context.sqos, 
+                                        contractName: context.sender, 
+                                        actionName: context.session.callback!, 
+                                        data: msgPL);
+                }
+            }
         }
     }
 
@@ -78,3 +98,4 @@ pub contract Cocomputation {
                         numbers: numbers);
     }
 }
+ 

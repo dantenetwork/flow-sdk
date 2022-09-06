@@ -63,7 +63,7 @@ pub contract SDKUtility {
         self.self_message_send_out(msg: msg);
     }
 
-    priv fun self_message_send_out(msg: SentMessageContract.msgToSubmit) {
+    access(account) fun self_message_send_out(msg: SentMessageContract.msgToSubmit) {
         let submitterRef = self.account.borrow<&SentMessageContract.Submitter>(from: /storage/msgSubmitter)!;
         submitterRef.submitWithAuth(msg, 
                                     acceptorAddr: self.account.address, 
