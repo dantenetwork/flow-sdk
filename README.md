@@ -49,7 +49,10 @@ To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure,
 ### Scripts
 * [checkRegistered](./scripts/checkRegistered.cdc) check the registered `ReceivedMessageVault`s and `SentMessageVault`s.   
 
-## API
+## High-Level API
+
+
+## Low-Level API
 ### Message Protocol
 The public sections of Omnichain messages related to dApp development are defined in [MessageProtocol](https://github.com/dantenetwork/cadence-contracts/blob/main/contracts/MessageProtocol.cdc), including:
 * [MessagePayload](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/MessageProtocol.cdc#L224) expresses user difined content used for interaction with other smart contracts deployed on other chains. `MessagePayload` is composed of [MessageItem](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/MessageProtocol.cdc#L99)s, which is compatible with all the different technology stack and supports all of the build-in types of different chains. The usage of how to construct a `MessagePayload` can be seen [here](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/contracts/StarLocker.cdc#L245).
@@ -122,6 +125,8 @@ The usage of the Omnichain NFT Infrastructure is quite convenient, and you can s
 # Examples
 ## Classic `Greetings` Case
 [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) is a calssic example of how to use Dante Protocol to build Omnichain dApps. It shows the simplest case of sending message out and receiving message from outside.  
+In `Greetings`, we create all resources outside of contract, including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter`. This brings in quite a lot of flexibility and safer access control but makes the creation steps dispersed and manual.  
+
 You can try it as follows:
 * Initiallize your own `ReceivedMessageVault` and `SentMessageVault` as mentioned above: [recver](#receivedmessagevault) and [sender](#sentmessagevault). Or use the global ones.
 * Initiallize your own `Submitter` as [mentioned above](#submitter). 
@@ -129,11 +134,13 @@ You can try it as follows:
     * Testnet: The address of `Greetings` contract deployed on Testnet is `0x86fc6f40cd9f9c66`. 
     * Emulator: Deploy `Greetings` if you are in [emulator environment](#emulator).
 ```sh
+cd 
 flow project deploy --update
 ```
 ### Send message out
 * Sending
 ```sh
+cd exampleApp/greetings/
 
 flow transactions send ./transactions/sendMessageOut.cdc <`SentMessageVault` address> --signer <your account> -n testnet
 ```
@@ -147,5 +154,38 @@ flow scripts execute ./scripts/getRecvedGreetings.cdc
 ```
 
 ## Classic `Cooperate Computation` Case
+[Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc) is another classic example that descripes how a resource on Flow can cooperate with other smart contracts deployed on other chains. More that sigle-direction messages sending and receiving in `Greetings`, `Cocomputation` has implemented bi-direction invocations between resouces on Flow and smart contracts on other chains.  
+In `Cooperate Computation`, we create all underlying resources directly in contract, which is another way to create and manage resources. We use the [High-Level](#high-level-api) SDK [SDKUtility](./contracts/SDKUtility.cdc) make it more convenient.  
 
+You can try it as follows:
+* Deploy `Cocomputation`:
+    * Testnet: The address of `Cocomputation` contract deployed on Testnet is `0x12cf9cb8bd3eb18e`. 
+    * Emulator: Deploy `Cocomputation` if you are in [emulator environment](#emulator).
+```sh
+cd exampleApp/computation/
 
+flow project deploy --update
+```
+
+### [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L12)
+A `Requester` call smart contracts deployed on other chains to make a simple computation and get the result through `callback`(The [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L21)).
+
+* Call out
+```sh
+flow transactions send ./transactions/CallOut.cdc '[1, 2, 3, 4, 5]' --signer <your account> -n testnet
+```
+* (to be done) wait for result coming back
+* Check the results
+```sh
+flow scripts execute ./scripts/getComputeResults.cdc <`Cocomputation` deployed account> -n testnet
+```
+
+### [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L48)
+A `ComputationServer` receive remote invocations from smart contracts deployed on other chains through [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L55), make a computation, and [return the result](./exampleApp/computation/contracts/Cocomputation.cdc#L70).  
+
+* (to be done) wait for computation task coming
+* Check received tasks
+```sh
+flow scripts execute ./scripts/getComputeTasks.cdc <`Cocomputation` deployed account>
+```
+* (to be done) Check the computation results on calling chains

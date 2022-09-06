@@ -1,0 +1,9 @@
+
+# call out
+flow transactions send ./transactions/CallOut.cdc '[1, 2, 3, 4, 5]' --signer emulator-Alice
+
+# check out coming computed results
+flow scripts execute ./scripts/getComputeResults.cdc 0x01cf0e2f2f715450
+
+# check out coming tasks
+flow scripts execute ./scripts/getComputeTasks.cdc 0x01cf0e2f2f715450
