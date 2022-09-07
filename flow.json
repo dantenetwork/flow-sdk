@@ -4,6 +4,9 @@
 		"mainnet": "access.mainnet.nodes.onflow.org:9000",
 		"testnet": "access.devnet.nodes.onflow.org:9000"
 	},
+	"contracts": {
+		"SDKUtility": "./contracts/SDKUtility.cdc"
+	},
 	"accounts": {
 		"emulator-Alice": {
 			"address": "0x01cf0e2f2f715450",
@@ -14,6 +17,18 @@
 		  "address": "0x86fc6f40cd9f9c66",
 		  "publicKey": "d5175b997fe25b2661d94f69c1d745fe6244cc6ad31b5899ef5b0ad6db76244af6a7e7fbf5687c6dab1ff3297b38e04ea93c71d1175a5b9152fa882e1741e33f",
 		  "key": "9e4a3a28fbbc4f8745ca118ebe39074f569e11d9ee2420d357c11c78b0cc19c3"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-Alice": [
+				"SDKUtility"
+			]
+		},
+		"testnet": {
+			"testnet-account": [
+				"SDKUtility"
+			]
 		}
 	}
 }

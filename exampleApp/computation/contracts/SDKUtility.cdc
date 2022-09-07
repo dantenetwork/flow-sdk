@@ -33,7 +33,7 @@ pub contract SDKUtility {
                                 actionName: [UInt8], 
                                 data: MessageProtocol.MessagePayload,
                                 callback: [UInt8]?, 
-                                commitment: [UInt8]?) {
+                                commitment: [UInt8]?): ContextKeeper.Context? {
         let msg = SentMessageContract.msgToSubmit(toChain: toChain, 
                                                     sqos: sqos, 
                                                     contractName: contractName, 
@@ -43,14 +43,14 @@ pub contract SDKUtility {
                                                     callback: callback, 
                                                     commitment: commitment, 
                                                     answer: nil);
-        self.self_message_send_out(msg: msg);
+        return self.self_message_send_out(msg: msg);
     }
 
     access(account) fun sendOut(toChain: String, 
                                 sqos: MessageProtocol.SQoS, 
                                 contractName: [UInt8], 
                                 actionName: [UInt8], 
-                                data: MessageProtocol.MessagePayload) {
+                                data: MessageProtocol.MessagePayload): ContextKeeper.Context? {
         let msg = SentMessageContract.msgToSubmit(toChain: toChain, 
                                                     sqos: sqos, 
                                                     contractName: contractName, 
@@ -60,12 +60,12 @@ pub contract SDKUtility {
                                                     callback: nil, 
                                                     commitment: nil, 
                                                     answer: nil);
-        self.self_message_send_out(msg: msg);
+        return self.self_message_send_out(msg: msg);
     }
 
-    access(account) fun self_message_send_out(msg: SentMessageContract.msgToSubmit) {
+    access(account) fun self_message_send_out(msg: SentMessageContract.msgToSubmit): ContextKeeper.Context? {
         let submitterRef = self.account.borrow<&SentMessageContract.Submitter>(from: /storage/msgSubmitter)!;
-        submitterRef.submitWithAuth(msg, 
+        return submitterRef.submitWithAuth(msg, 
                                     acceptorAddr: self.account.address, 
                                     alink: "sentMessageVault", 
                                     oSubmitterAddr: self.account.address, 

@@ -22,6 +22,9 @@ pub contract Cocomputation {
             if let rst = data.getItem(name: "result") {
                 if let val = rst.value as? UInt32 {
                     self.results.append(val);
+                    if let context = ContextKeeper.getContext() {
+                        log("Receiving session id is: ".concat(context.session.id.toString()));
+                    }
                 }
             }
         }
@@ -35,13 +38,16 @@ pub contract Cocomputation {
             let msgItem = MessageProtocol.createMessageItem(name: "nums", type: MessageProtocol.MsgType.cdcVecU32, value: numbers);
             msgPL.addItem(item: msgItem!);
             
-            SDKUtility.callOut(toChain: toChain, 
+            if let context = SDKUtility.callOut(toChain: toChain, 
                                 sqos: MessageProtocol.SQoS(), 
                                 contractName: contractName, 
                                 actionName: actionName, 
                                 data: msgPL,
                                 callback: self.link.utf8, 
-                                commitment: nil)
+                                commitment: nil) {
+                log("Calling out session id is: ".concat(context.session.id.toString()));                    
+            }
+            
         }
     }
 
