@@ -1,6 +1,15 @@
-# Introduction
+# Dante Protocol SDK for Flow
+## Introduction
 This is the SDK with which developers can easily build their Omnichain dApps based on Dante Protocol Stack on Flow. It's a little bit different from SDKs in other technology stack, the `flow-sdk` are quite convenient and developers only need to create their own [Submitter](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L39) and [SentMessageVault](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L163) resources to make smart contracts invocation and send messages out to other chains. Similarly, they only need to create their own [ReceivedMessageVault](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L194) to receive resouce calls and messages from other chains.  
 More details can be seen at [API](#api), and we provide two typical examples at [examples](#examples);
+
+## Index
+* [Environment](#environment)
+* [High-Level API](#high-level-api)
+* [Basic Tools](#basic-tools)
+* [Low-Level API](#low-level-api)
+* [Omnichain NFT](#omnichain-nft)
+* [Examples](#examples)
 
 ## Environment
 ### Deployment
@@ -32,6 +41,15 @@ flow transactions send ./transactions/test/transferFlow.cdc 100.0 0x01cf0e2f2f71
 ```
 As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.json`, directly execute the scripts above works well and we can use account `emulator-Alice` in emulator to make operation now.
 
+## High-Level API
+The high-level api provides a very convenient way to create `resources`. When the contract [SDKUtility](./contracts/SDKUtility.cdc) is deployed with your own account, all omnichain resources including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter` are created, saved and registered by the constructor. More over, `SDKUtility` provides some methods with `access(account)` to help developers implement cross-chain operations. The `access(account)` means only the deployed account related smart contracts and resources has the permission to call these methods.  
+* [callOut](./contracts/SDKUtility.cdc#L30): help developers send an invocation out with a callback to receive results. The parameter `callback` is a string to build a `PublicPath`, which is transformed to `utf8` to be the input. And the `callback` is related to the interface `ReceivedMessageContract.Callee` of every resource that needs to receive messages from outside. An example can be found at [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L12).  
+* [sendOut](./contracts/SDKUtility.cdc#L49): help developers send a common message out without a callback. An example can be found at [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L48).
+
+The two above methods in `SDKUtility` are responsible for sending invocations or messages out, and we still need a methods to receive messages. In resource-oriented programming we need to bind receiving to every concrete resource, that is, every resource who wants to receive outside invocations or messages needs to implement the interface [ReceivedMessageInterface.Callee](https://github.com/dantenetwork/cadence-contracts/blob/b75d47440cf1a7e1246217c6a2fa0381a70d7bb5/contracts/ReceivedMessageContract.cdc#L20). Examples can be fount both at [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) and [Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc).  
+
+Actually, the example [Cocomputation](./exampleApp/computation/) is a typical use case of the high-level api.  
+
 ## Basic Tools
 Note that remember to switch the import address when swiching between `emulator` and `testnet`.
 
@@ -48,9 +66,6 @@ To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure,
 
 ### Scripts
 * [checkRegistered](./scripts/checkRegistered.cdc) check the registered `ReceivedMessageVault`s and `SentMessageVault`s.   
-
-## High-Level API
-
 
 ## Low-Level API
 ### Message Protocol
@@ -107,10 +122,10 @@ flow transactions send ./transactions/destroySubmitter.cdc --signer <your accoun
     * @param `oSubmitterAddr`: The owner address of the `Submitter`
     * @param `slink`: the `Submitter`'s public link, which is default to be *msgSubmitter*
 
-### Omnichain NFT
-The usage of the Omnichain NFT Infrastructure is quite convenient, and you can see more details [here](https://github.com/dantenetwork/cadence-contracts/tree/crypto-dev/omniverseNFT).
+## Omnichain NFT
+The usage of the Omnichain NFT Infrastructure is quite convenient, and you can see more details [here](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).
 
-#### Send NFT Out
+### Send NFT Out
 * [StarLocker.sendoutNFT(...)](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/contracts/StarLocker.cdc#L202): Send an NFT from Flow to outside chains:
     * @param `transferToken`: An NFT implements the interface `NonFungibleToken.INFT` on Flow
     * @param `toChain`: The [target chain name]()
@@ -119,13 +134,13 @@ The usage of the Omnichain NFT Infrastructure is quite convenient, and you can s
     * @param `receiver`: The reciever(owner of the NFT) address on the target chain.
     * @param `hashValue`: The answer of the hash-locker on the target chain. 
 
-#### Claim NFT Coming in
+### Claim NFT Coming in
 * [StarLocker.claimNFT(...)](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/contracts/StarLocker.cdc#L264): Claim an NFT back to Flow account when receiving an NFT outside.
 
 # Examples
 ## Classic `Greetings` Case
 [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) is a calssic example of how to use Dante Protocol to build Omnichain dApps. It shows the simplest case of sending message out and receiving message from outside.  
-In `Greetings`, we create all resources outside of contract, including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter`. This brings in quite a lot of flexibility and safer access control but makes the creation steps dispersed and manual.  
+In `Greetings`, we show how to use the [Low-Level API](#low-level-api) to manage omnichain `resources`. That is, we create manage all resources of Dante protocol stack outside of a contract, including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter`. This brings in quite a lot of flexibility and safer access control but makes the creation steps dispersed and manual.  
 
 You can try it as follows:
 * Initiallize your own `ReceivedMessageVault` and `SentMessageVault` as mentioned above: [recver](#receivedmessagevault) and [sender](#sentmessagevault). Or use the global ones.
@@ -155,7 +170,7 @@ flow scripts execute ./scripts/getRecvedGreetings.cdc
 
 ## Classic `Cooperate Computation` Case
 [Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc) is another classic example that descripes how a resource on Flow can cooperate with other smart contracts deployed on other chains. More that sigle-direction messages sending and receiving in `Greetings`, `Cocomputation` has implemented bi-direction invocations between resouces on Flow and smart contracts on other chains.  
-In `Cooperate Computation`, we create all underlying resources directly in contract, which is another way to create and manage resources. We use the [High-Level](#high-level-api) SDK [SDKUtility](./contracts/SDKUtility.cdc) make it more convenient.  
+In `Cooperate Computation`, we use [High-Level API](#high-level-api) to manage omnichain `resources`. That is, we create all underlying resources directly in contract, which is another way to create and manage resources. We use the [High-Level](#high-level-api) SDK [SDKUtility](./contracts/SDKUtility.cdc) make it more convenient.  
 
 You can try it as follows:
 * Deploy `Cocomputation`:
