@@ -175,7 +175,7 @@ In `Cooperate Computation`, we use [High-Level API](#high-level-api) to manage o
 
 You can try it as follows:
 * Deploy `Cocomputation`:
-    * Testnet: The address of `Cocomputation` contract deployed on Testnet is `0x12cf9cb8bd3eb18e`. 
+    * Testnet: The address of `Cocomputation` contract deployed on Testnet is `0xc133efc4b43676a0`. 
     * Emulator: Deploy `Cocomputation` if you are in [emulator environment](#emulator).
 ```sh
 cd exampleApp/computation/

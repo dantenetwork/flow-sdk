@@ -1,14 +1,18 @@
+/*
 import SentMessageContract from 0xf8d6e0586b0a20c7;
 import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
 import MessageProtocol from 0xf8d6e0586b0a20c7;
 import ContextKeeper from 0xf8d6e0586b0a20c7;
 import CrossChain from 0xf8d6e0586b0a20c7;
+*/
 
-//import SentMessageContract from 0x5f37faed5f558aca;
-//import ReceivedMessageContract from 0x5f37faed5f558aca;
-//import MessageProtocol from 0x5f37faed5f558aca;
-//import ContextKeeper from 0x5f37faed5f558aca;
-//import CrossChain from 0x5f37faed5f558aca;
+///*
+import SentMessageContract from 0x5f37faed5f558aca;
+import ReceivedMessageContract from 0x5f37faed5f558aca;
+import MessageProtocol from 0x5f37faed5f558aca;
+import ContextKeeper from 0x5f37faed5f558aca;
+import CrossChain from 0x5f37faed5f558aca;
+//*/
 
 pub contract SDKUtility {
     init() {

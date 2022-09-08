@@ -7,3 +7,6 @@ flow scripts execute ./scripts/getComputeResults.cdc 0x01cf0e2f2f715450
 
 # check out coming tasks
 flow scripts execute ./scripts/getComputeTasks.cdc 0x01cf0e2f2f715450
+
+# clear resources
+flow transactions send ./transactions/clearResources.cdc --signer testnet-account -n testnet
