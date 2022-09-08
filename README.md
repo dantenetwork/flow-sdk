@@ -57,7 +57,7 @@ Note that remember to switch the import address when swiching between `emulator`
 
 To use the Omnichain functions of Dante protocol, there needs to be a `ReceivedMessageVault` resource and a `SentMessageVault` resource. We have deployed a **global** resource at `0x5f37faed5f558aca`, with public link `sentMessageVault` and `receivedMessageVault`.  
 
-To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure, try the following tools. Example of usage can be found in [opsh](./opsh);
+To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure, try the following tools. Example of the [Flow CLI](https://developers.flow.com/tools/flow-cli) can be found in [opsh](./opsh);
 
 ### Transactions
 * [initSender](./transactions/initSender.cdc) creates account bound `SentMessageVault` and registered to `CrossChain`
