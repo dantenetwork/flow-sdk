@@ -123,9 +123,10 @@ flow transactions send ./transactions/destroySubmitter.cdc --signer <your accoun
     * @param `oSubmitterAddr`: The owner address of the `Submitter`
     * @param `slink`: the `Submitter`'s public link, which is default to be *msgSubmitter*
 
-## Omnichain NFT
-The usage of the Omnichain NFT Infrastructure is quite convenient, and you can see more details [here](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).
+## Omniverse NFT
+You can find detailed introduction of `Omniverse NFT` [here](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
 
+The usage of the Omnichain NFT Infrastructure is quite convenient, and the details are as follows:  
 ### Send NFT Out
 * [StarLocker.sendoutNFT(...)](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/contracts/StarLocker.cdc#L202): Send an NFT from Flow to outside chains:
     * @param `transferToken`: An NFT implements the interface `NonFungibleToken.INFT` on Flow
