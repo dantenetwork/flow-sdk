@@ -1,29 +1,59 @@
+///*
 import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
 import MessageProtocol from 0xf8d6e0586b0a20c7;
 import ContextKeeper from 0xf8d6e0586b0a20c7;
+//*/
 
-//import ReceivedMessageContract from 0x5f37faed5f558aca;
-//import MessageProtocol from 0x5f37faed5f558aca;
-//import ContextKeeper from 0x5f37faed5f558aca;
+/*
+import ReceivedMessageContract from 0x5f37faed5f558aca;
+import MessageProtocol from 0x5f37faed5f558aca;
+import ContextKeeper from 0x5f37faed5f558aca;
+*/
 
 import SDKUtility from "./SDKUtility.cdc";
 
 pub contract Cocomputation {
+    pub struct RequestRecord {
+        pub let sessionID: UInt128;
+        pub var input: [UInt32]?;
+        pub var results: UInt32?;
+
+        init(sessionID: UInt128) {
+            self.sessionID = sessionID;
+            self.input = nil;
+            self.results = nil;
+        }
+
+        pub fun setInput(input: [UInt32]) {
+            self.input = input;
+        }
+
+        pub fun setResults(results: UInt32) {
+            self.results = results;
+        }
+    }
+
     pub resource Requester: ReceivedMessageContract.Callee {
-        pub let results: [UInt32];
+        pub let recorder: {UInt128: RequestRecord};
         pub let link: String;
+        priv var currentID: UInt128?;
 
         init(link: String) {
-            self.results = [];
+            self.recorder = {};
             self.link = link;
+            self.currentID = nil;
         }
 
         pub fun callMe(data: MessageProtocol.MessagePayload) {
             if let rst = data.getItem(name: "result") {
                 if let val = rst.value as? UInt32 {
-                    self.results.append(val);
                     if let context = ContextKeeper.getContext() {
                         log("Receiving session id is: ".concat(context.session.id.toString()));
+                        if self.recorder.containsKey(context.session.id)  && (self.currentID == context.session.id) {
+                            self.recorder[context.session.id]!.setResults(results: val);
+                        } else {
+                            log("invalid session id");
+                        }
                     }
                 }
             }
@@ -45,7 +75,11 @@ pub contract Cocomputation {
                                 data: msgPL,
                                 callback: self.link.utf8, 
                                 commitment: nil) {
-                log("Calling out session id is: ".concat(context.session.id.toString()));                    
+                log("Calling out session id is: ".concat(context.session.id.toString()));
+                let record = RequestRecord(sessionID: context.session.id);
+                record.setInput(input: numbers);
+                self.recorder[context.session.id] = record;         
+                self.currentID = context.session.id;     
             }
             
         }

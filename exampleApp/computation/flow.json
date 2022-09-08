@@ -8,7 +8,7 @@
 	  "testnet": {
 		"default": {
 		  "port": 9000,
-		  "serviceAccount": "testnet-account"
+		  "serviceAccount": "testnet-operator"
 		}
 	},
 	"networks": {
@@ -30,6 +30,11 @@
 			"address": "0x12cf9cb8bd3eb18e",
 			"publicKey": "fc320070dc529333e6c87100e39662dcad49f5f9516199e05efb991612d718cd5d76c16d1bc4f922bec48bc2993a5be0cb2dfa96da7cc32572b42a8799db313f",
 			"key": "e23c52870758a5bb6aa617eecdf7ca0fd1ad41963c1d7f6d26daf14ce47f3a18"
+		},
+		"testnet-operator": {
+			"address": "0xc133efc4b43676a0",
+			"publicKey": "22ce274165e8b38358f01566ea20ae396cd95f23c50dd6298dcfebca5113a05bc36205c008fa3ada8076758a8dd7b82f03753f5605752bec992dc34444cc3568",
+			"key": "f9e2048f473009b0433b90fa26200c3592277fa3976334659c1436522b157d59"
 		}
 	},
 	"deployments": {
@@ -40,7 +45,7 @@
 			]
 		},
 		"testnet": {
-			"testnet-account": [
+			"testnet-operator": [
 				"Cocomputation",
 				"SDKUtility"
 			]

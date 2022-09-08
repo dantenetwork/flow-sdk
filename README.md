@@ -31,7 +31,7 @@ flow emulator --verbose
 flow project deploy --update
 
 ```
-* Prapare an account to operate
+* Prapare an account to operate  
 After started the emulator, create an account and transfer some simu-Flow to it for gas as follows:
 ```sh
 flow accounts create --key 81262aa27f1630ccf1293300e8e1d9a6ba542dffa796b860d53873867175e9d31bd7b7581d2f200f9c3dfdbc10ae912ff036946981e3d8996a14f186d20e3e2f
@@ -39,16 +39,18 @@ flow accounts create --key 81262aa27f1630ccf1293300e8e1d9a6ba542dffa796b860d5387
 # transfer Flow Token
 flow transactions send ./transactions/test/transferFlow.cdc 100.0 0x01cf0e2f2f715450
 ```
-As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.json`, directly execute the scripts above works well and we can use account `emulator-Alice` in emulator to make operation now.
+As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.json`, directly executing the scripts above will work well and we can use account `emulator-Alice` in emulator to make operation now.
 
 ## High-Level API
 The high-level api provides a very convenient way to create `resources`. When the contract [SDKUtility](./contracts/SDKUtility.cdc) is deployed with your own account, all omnichain resources including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter` are created, saved and registered by the constructor. More over, `SDKUtility` provides some methods with `access(account)` to help developers implement cross-chain operations. The `access(account)` means only the deployed account related smart contracts and resources has the permission to call these methods.  
-* [callOut](./contracts/SDKUtility.cdc#L30): help developers send an invocation out with a callback to receive results. The parameter `callback` is a string to build a `PublicPath`, which is transformed to `utf8` to be the input. And the `callback` is related to the interface `ReceivedMessageContract.Callee` of every resource that needs to receive messages from outside. An example can be found at [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L12).  
-* [sendOut](./contracts/SDKUtility.cdc#L49): help developers send a common message out without a callback. An example can be found at [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L48).
+* [callOut](./contracts/SDKUtility.cdc#L30): help developers send an invocation out with a callback to receive results. The parameter `callback` is a string to build a `PublicPath`, which is transformed to `utf8` to be the input. And the `callback` is related to the interface `ReceivedMessageContract.Callee` of resources that is neccessary to receive messages from outside. In addition, although the `callOut` and `callback` heppen in different blocks, which is asynchronous of course, they could still be "connected" by [Session](./exampleApp/computation/contracts/Cocomputation.cdc#L26) in [Context](./exampleApp/computation/contracts/Cocomputation.cdc#L25).  
+* [sendOut](./contracts/SDKUtility.cdc#L49): help developers send a common message out without a callback. An example can be found at [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L48).  
 
-The two above methods in `SDKUtility` are responsible for sending invocations or messages out, and we still need a methods to receive messages. In resource-oriented programming we need to bind receiving to every concrete resource, that is, every resource who wants to receive outside invocations or messages needs to implement the interface [ReceivedMessageInterface.Callee](https://github.com/dantenetwork/cadence-contracts/blob/b75d47440cf1a7e1246217c6a2fa0381a70d7bb5/contracts/ReceivedMessageContract.cdc#L20). Examples can be fount both at [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) and [Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc).  
+Both `callOut` and `sendOut` return a [ContextKeeper.Context](https://github.com/dantenetwork/cadence-contracts/blob/f4f834e9b1d899619db8273554273e23d8e10d9c/contracts/ContextKeeper.cdc#L5), which contains a [Session](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/MessageProtocol.cdc#L319) with a `Session.id` inside that might be neccessary when processing the `callback`. The [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L47) example descripes an use case about how a `Session` can help connect context between `callOut` and `callback`(interface `ReceivedMessageInterface.Callee`).   
 
-Actually, the example [Cocomputation](./exampleApp/computation/) is a typical use case of the high-level api.  
+The two above methods in `SDKUtility` are responsible for sending invocations or messages out, and we still need methods to receive messages. In resource-oriented programming we need to bind receiving to every concrete resource, that is, every resource who wants to receive outside invocations or messages needs to implement the interface [ReceivedMessageInterface.Callee](https://github.com/dantenetwork/cadence-contracts/blob/b75d47440cf1a7e1246217c6a2fa0381a70d7bb5/contracts/ReceivedMessageContract.cdc#L20). Examples can be fount both at [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) and [Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc).  
+
+Generally, the example [Cocomputation](./exampleApp/computation/) is a typical use case of the high-level api.  
 
 ## Basic Tools
 Note that remember to switch the import address when swiching between `emulator` and `testnet`.
@@ -84,7 +86,6 @@ flow transactions send ./transactions/initRecver.cdc --signer <your account> -n 
 # clear the `ReceivedMessageVault` resource
 flow transactions send ./transactions/destroyRecver.cdc --signer <your account> -n testnet
 ```
-* Resource Interface
 
 * [Callee Interface](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L19) provides a public interface for user-defined resources to receive invocations outside, the usage of which can be seen in [examples](./exampleApp/greetings/contracts/Greetings.cdc#L17).
 
@@ -174,7 +175,7 @@ In `Cooperate Computation`, we use [High-Level API](#high-level-api) to manage o
 
 You can try it as follows:
 * Deploy `Cocomputation`:
-    * Testnet: The address of `Cocomputation` contract deployed on Testnet is `0x12cf9cb8bd3eb18e`. 
+    * Testnet: The address of `Cocomputation` contract deployed on Testnet is `0xc133efc4b43676a0`. 
     * Emulator: Deploy `Cocomputation` if you are in [emulator environment](#emulator).
 ```sh
 cd exampleApp/computation/
