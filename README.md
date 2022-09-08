@@ -43,8 +43,8 @@ As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.jso
 
 ## High-Level API
 The high-level api provides a very convenient way to create `resources`. When the contract [SDKUtility](./contracts/SDKUtility.cdc) is deployed with your own account, all omnichain resources including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter` are created, saved and registered by the constructor. More over, `SDKUtility` provides some methods with `access(account)` to help developers implement cross-chain operations. The `access(account)` means only the deployed account related smart contracts and resources has the permission to call these methods.  
-* [callOut](./contracts/SDKUtility.cdc#L30): help developers send an invocation out with a callback to receive results. The parameter `callback` is a string to build a `PublicPath`, which is transformed to `utf8` to be the input. And the `callback` is related to the interface `ReceivedMessageContract.Callee` of resources that is neccessary to receive messages from outside. In addition, although the `callOut` and `callback` heppen in different blocks, which is asynchronous of course, they could still be "connected" by [Session](./exampleApp/computation/contracts/Cocomputation.cdc#L26) in [Context](./exampleApp/computation/contracts/Cocomputation.cdc#L25).  
-* [sendOut](./contracts/SDKUtility.cdc#L49): help developers send a common message out without a callback. An example can be found at [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L48).  
+* [callOut](./contracts/SDKUtility.cdc#L30): help developers send an invocation out with a callback to receive results. The parameter `callback` is a string to build a `PublicPath`, which is transformed to `utf8` to be the input. And the `callback` is related to the interface `ReceivedMessageContract.Callee` of resources that is neccessary to receive messages from outside. In addition, although the `callOut` and `callback` heppen in different blocks, which is asynchronous of course, they could still be "connected" by [Session](./exampleApp/computation/contracts/Cocomputation.cdc#L53) in [Context](./exampleApp/computation/contracts/Cocomputation.cdc#L50).  
+* [sendOut](./contracts/SDKUtility.cdc#L49): help developers send a common message out without a callback. An example can be found at [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L88).  
 
 Both `callOut` and `sendOut` return a [ContextKeeper.Context](https://github.com/dantenetwork/cadence-contracts/blob/f4f834e9b1d899619db8273554273e23d8e10d9c/contracts/ContextKeeper.cdc#L5), which contains a [Session](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/MessageProtocol.cdc#L319) with a `Session.id` inside that might be neccessary when processing the `callback`. The [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L47) example descripes an use case about how a `Session` can help connect context between `callOut` and `callback`(interface `ReceivedMessageInterface.Callee`).   
 
@@ -57,7 +57,7 @@ Note that remember to switch the import address when swiching between `emulator`
 
 To use the Omnichain functions of Dante protocol, there needs to be a `ReceivedMessageVault` resource and a `SentMessageVault` resource. We have deployed a **global** resource at `0x5f37faed5f558aca`, with public link `sentMessageVault` and `receivedMessageVault`.  
 
-To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure, try the following tools. Example of usage can be found in [opsh](./opsh);
+To use your own `ReceivedMessageVault` and `SentMessageVault` to be more secure, try the following tools. Example of the [Flow CLI](https://developers.flow.com/tools/flow-cli) can be found in [opsh](./opsh);
 
 ### Transactions
 * [initSender](./transactions/initSender.cdc) creates account bound `SentMessageVault` and registered to `CrossChain`
@@ -123,9 +123,10 @@ flow transactions send ./transactions/destroySubmitter.cdc --signer <your accoun
     * @param `oSubmitterAddr`: The owner address of the `Submitter`
     * @param `slink`: the `Submitter`'s public link, which is default to be *msgSubmitter*
 
-## Omnichain NFT
-The usage of the Omnichain NFT Infrastructure is quite convenient, and you can see more details [here](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).
+## Omniverse NFT
+You can find detailed introduction of `Omniverse NFT` [here](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
 
+The usage of the Omnichain NFT Infrastructure is quite convenient, and the details are as follows:  
 ### Send NFT Out
 * [StarLocker.sendoutNFT(...)](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/contracts/StarLocker.cdc#L202): Send an NFT from Flow to outside chains:
     * @param `transferToken`: An NFT implements the interface `NonFungibleToken.INFT` on Flow
@@ -158,7 +159,7 @@ flow project deploy --update
 ```sh
 cd exampleApp/greetings/
 
-flow transactions send ./transactions/sendMessageOut.cdc <`SentMessageVault` address> --signer <your account> -n testnet
+flow transactions send ./transactions/sendMessageOut.cdc <'SentMessageVault' address> --signer <your account> -n testnet
 ```
 * (to be done) Wait other chain received the message
 
@@ -183,8 +184,8 @@ cd exampleApp/computation/
 flow project deploy --update
 ```
 
-### [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L12)
-A `Requester` call smart contracts deployed on other chains to make a simple computation and get the result through `callback`(The [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L21)).
+### [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L36)
+A `Requester` call smart contracts deployed on other chains to make a simple computation and get the result through `callback`(The [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L47)).
 
 * Call out
 ```sh
@@ -193,15 +194,15 @@ flow transactions send ./transactions/CallOut.cdc '[1, 2, 3, 4, 5]' --signer <yo
 * (to be done) wait for result coming back
 * Check the results
 ```sh
-flow scripts execute ./scripts/getComputeResults.cdc <`Cocomputation` deployed account> -n testnet
+flow scripts execute ./scripts/getComputeResults.cdc <'Cocomputation' deployed account> -n testnet
 ```
 
-### [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L48)
-A `ComputationServer` receive remote invocations from smart contracts deployed on other chains through [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L55), make a computation, and [return the result](./exampleApp/computation/contracts/Cocomputation.cdc#L70).  
+### [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L88)
+A `ComputationServer` receive remote invocations from smart contracts deployed on other chains through [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L95), make a computation, and [response the result](./exampleApp/computation/contracts/Cocomputation.cdc#L110).  
 
 * (to be done) wait for computation task coming
 * Check received tasks
 ```sh
-flow scripts execute ./scripts/getComputeTasks.cdc <`Cocomputation` deployed account>
+flow scripts execute ./scripts/getComputeTasks.cdc <'Cocomputation' deployed account>
 ```
 * (to be done) Check the computation results on calling chains
