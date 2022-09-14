@@ -159,7 +159,7 @@ flow project deploy --update
 ```sh
 cd exampleApp/greetings/
 
-flow transactions send ./transactions/sendMessageOut.cdc <'SentMessageVault' address> --signer <your account> -n testnet
+flow transactions send ./transactions/sendMessageOut.cdc <"toChain"> <"contract name"> <"action name"> <'SentMessageVault' address> --signer <your account> -n testnet
 ```
 * (to be done) Wait other chain received the message
 
@@ -189,7 +189,7 @@ A `Requester` call smart contracts deployed on other chains to make a simple com
 
 * Call out
 ```sh
-flow transactions send ./transactions/CallOut.cdc '[1, 2, 3, 4, 5]' --signer <your account> -n testnet
+flow transactions send ./transactions/CallOut.cdc <"toChain"> <"contract name"> <"action name"> '[1, 2, 3, 4, 5]' --signer <your account> -n testnet
 ```
 * (to be done) wait for result coming back
 * Check the results

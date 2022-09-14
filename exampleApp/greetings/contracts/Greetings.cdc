@@ -1,10 +1,14 @@
+/*
 import SentMessageContract from 0xf8d6e0586b0a20c7;
 import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
 import MessageProtocol from 0xf8d6e0586b0a20c7;
+*/
 
-//import SentMessageContract from 0x5f37faed5f558aca;
-//import ReceivedMessageContract from 0x5f37faed5f558aca;
-//import MessageProtocol from 0x5f37faed5f558aca;
+///*
+import SentMessageContract from 0x5f37faed5f558aca;
+import ReceivedMessageContract from 0x5f37faed5f558aca;
+import MessageProtocol from 0x5f37faed5f558aca;
+//*/
 
 pub contract Greetings {
     pub resource GreetingRecver: ReceivedMessageContract.Callee {
@@ -31,7 +35,12 @@ pub contract Greetings {
         self.account.link<&{ReceivedMessageContract.Callee}>(/public/GreetingRecver, target: /storage/GreetingRecver)
     }
     
-    pub fun sendGreeting(greetingMessage: String, senderAddr: Address, link: String) {
+    pub fun sendGreeting(toChain: String, 
+                        contractName: [UInt8], 
+                        actionName: [UInt8], 
+                        greetingMessage: String, 
+                        senderAddr: Address, 
+                        link: String) {
         let submitterRef = self.account.borrow<&SentMessageContract.Submitter>(from: /storage/msgSubmitter)!;
 
         // Message params
@@ -46,10 +55,10 @@ pub contract Greetings {
         let greeting = MessageProtocol.createMessageItem(name: "greeting", type: MessageProtocol.MsgType.cdcString, value: greetingMessage);
         data.addItem(item: greeting!);
 
-        let msg = SentMessageContract.msgToSubmit(toChain: "POLKADOT", 
+        let msg = SentMessageContract.msgToSubmit(toChain: toChain, 
                                                     sqos: sqos, 
-                                                    contractName: "Greeting on Polkadot".utf8, 
-                                                    actionName: "Receive Greetings".utf8, 
+                                                    contractName: contractName, 
+                                                    actionName: actionName, 
                                                     data: data, 
                                                     callType: callType, 
                                                     callback: callback, 
