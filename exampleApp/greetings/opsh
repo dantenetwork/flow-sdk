@@ -12,4 +12,4 @@ flow transactions send ./transactions/destroySubmitter.cdc -n testnet --signer t
 # operations
 flow scripts execute ./scripts/getRecvedGreetings.cdc
 
-flow transactions send ./transactions/sendMessageOut.cdc "EVM" "0x12345678901234567890" "0x11223344" 0x01cf0e2f2f715450
+flow transactions send ./transactions/sendMessageOut.cdc "PLATONEVMDEV" "[234, 210,  82, 239, 183, 33,89, 176, 245, 127, 253, 81,28, 232, 133,  35,  49, 66,123,  54]" "[45, 67, 104, 34]" 0x01cf0e2f2f715450

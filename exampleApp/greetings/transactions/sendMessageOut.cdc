@@ -1,8 +1,8 @@
 import Greetings from "../contracts/Greetings.cdc"
 
 transaction (toChain: String, 
-            contractName: String, 
-            actionName: String,
+            contractName: [UInt8], 
+            actionName: [UInt8],
             senderAddr: Address) {
 
     prepare(acct: AuthAccount) {
@@ -11,8 +11,8 @@ transaction (toChain: String,
 
     execute {
         Greetings.sendGreeting(toChain: toChain, 
-                                contractName: contractName.utf8, 
-                                actionName: actionName.utf8,
+                                contractName: contractName, 
+                                actionName: actionName,
                                 greetingMessage: "Hello nika", 
                                 senderAddr: senderAddr, 
                                 link: "msgSubmitter");
