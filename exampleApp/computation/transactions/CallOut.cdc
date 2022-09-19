@@ -1,8 +1,8 @@
 import Cocomputation from "../contracts/Cocomputation.cdc"
 
 transaction (toChain: String, 
-            contractName: String, 
-            actionName: String, 
+            contractName: [UInt8], 
+            actionName: [UInt8], 
             inputs: [UInt32]) {
 
     prepare(acct: AuthAccount) {
@@ -11,8 +11,8 @@ transaction (toChain: String,
 
     execute {
         Cocomputation.testCallOut(toChain: toChain, 
-                                    contractName: contractName.utf8, 
-                                    actionName: actionName.utf8, 
+                                    contractName: contractName, 
+                                    actionName: actionName, 
                                     numbers: inputs);
     }
 }

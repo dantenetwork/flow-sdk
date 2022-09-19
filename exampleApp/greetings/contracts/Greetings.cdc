@@ -21,7 +21,13 @@ pub contract Greetings {
         pub fun callMe(data: MessageProtocol.MessagePayload) {
             var greetingMessage = "";
             for ele in data.items {
-                greetingMessage = greetingMessage.concat(ele.value as! String).concat("-");
+                if ele.type == MessageProtocol.MsgType.cdcVecString.rawValue {
+                    for strinvalue in (ele.value as! [String]) {
+                        greetingMessage = greetingMessage.concat(strinvalue).concat("-");
+                    }
+                } else {
+                    panic("Invalid value, need a `[String]`");
+                }
             }
 
             greetingMessage = greetingMessage.concat(self.recvedGreetings.length.toString());
@@ -51,8 +57,10 @@ pub contract Greetings {
         let answer: [UInt8] = []
 
         let data = MessageProtocol.MessagePayload()
+
+        let messageVec: [String] = ["FLOWTEST", "Greeting", greetingMessage, getCurrentBlock().timestamp.toString()];
         
-        let greeting = MessageProtocol.createMessageItem(name: "greeting", type: MessageProtocol.MsgType.cdcString, value: greetingMessage);
+        let greeting = MessageProtocol.createMessageItem(name: "greeting", type: MessageProtocol.MsgType.cdcVecString, value: messageVec);
         data.addItem(item: greeting!);
 
         let msg = SentMessageContract.msgToSubmit(toChain: toChain, 
