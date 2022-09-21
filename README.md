@@ -115,12 +115,18 @@ The usage of the Omnichain NFT Infrastructure is quite convenient, and the detai
     * @param `contractName`: The `StarLocker` contract address on the target chain. *This will be optimized in the future*
     * @param `actionName`: The `function selector` receiving the NFTs from outside of the `StarLocker` on the target chain. *This will be optimized in the future*
     * @param `receiver`: The reciever(owner of the NFT) address on the target chain.
-    * @param `hashValue`: The answer of the hash-locker on the target chain. 
+    * @param `hashValue`: The hash question to claim the NFT on the target chain.   
+The use case can be seen [here](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/scripts/SendNFToutTest.cdc#L153)
 
 ### Claim NFT Coming in
 * [StarLocker.claimNFT(...)](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/contracts/StarLocker.cdc#L264): Claim an NFT back to Flow account when receiving an NFT outside.
+   * @param: `domain: String`: the NFT name in the `DisplayView`
+   * @param: `id: UInt64`: the NFT id
+   * @param: `answer: String`, the hash answer to claim the NFT
+The use case can be seen [here](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/omniverseNFT/scripts/SendNFToutTest.cdc#L223)
 
 # Examples
+Note that the following tutorial just details the steps on Flow, and you can find more details at the [demo](https://github.com/dantenetwork/cross-chain-demo/tree/flow-rinkeby#interoperation-between-flow-testnet-and-rinkeby)  
 ## Classic `Greetings` Case
 [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) is a calssic example of how to use Dante Protocol to build Omnichain dApps. It shows the simplest case of sending message out and receiving message from outside.  
 In `Greetings`, we show how to use the [Low-Level API](#low-level-api) to manage omnichain `resources`. That is, we create manage all resources of Dante protocol stack outside of a contract, including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter`. This brings in quite a lot of flexibility and safer access control but makes the creation steps dispersed and manual.  
@@ -128,51 +134,41 @@ In `Greetings`, we show how to use the [Low-Level API](#low-level-api) to manage
 You can try it as follows:
 * Initiallize your own `ReceivedMessageVault` and `SentMessageVault` as mentioned above: [recver](#receivedmessagevault) and [sender](#sentmessagevault). Or use the global ones.
 * Initiallize your own `Submitter` as [mentioned above](#submitter). 
-* Deploy `Greetings`: 
+* Deployed `Greetings`: 
     * Testnet: The address of `Greetings` contract deployed on Testnet is `0x86fc6f40cd9f9c66`. 
-    * Emulator: Deploy `Greetings` if you are in [emulator environment](#emulator).
-```sh
-cd 
-flow project deploy --update
-```
+
 ### Send message out
 * Sending
 ```sh
 cd exampleApp/greetings/
 
-flow transactions send ./transactions/sendMessageOut.cdc <"toChain"> <"contract name"> <"action name"> <'SentMessageVault' address> --signer <your account> -n testnet
+flow transactions send ./transactions/sendMessageOut.cdc <"toChain"> <"contract name on other chains"> <"action name"> <'SentMessageVault' address> --signer <your account> -n testnet
 ```
-* (to be done) Wait other chain received the message
+* Check the message received on the other chains.  
 
 ### Receive message from
-* (to be done) Wait message from other chains
+* Wait message from other chains
 * Check if received
 ```sh
 flow scripts execute ./scripts/getRecvedGreetings.cdc
-```
+```  
 
 ## Classic `Cooperate Computation` Case
 [Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc) is another classic example that descripes how a resource on Flow can cooperate with other smart contracts deployed on other chains. More that sigle-direction messages sending and receiving in `Greetings`, `Cocomputation` has implemented bi-direction invocations between resouces on Flow and smart contracts on other chains.  
 In `Cooperate Computation`, we use [High-Level API](#high-level-api) to manage omnichain `resources`. That is, we create all underlying resources directly in contract, which is another way to create and manage resources. We use the [High-Level](#high-level-api) SDK [SDKUtility](./contracts/SDKUtility.cdc) make it more convenient.  
 
 You can try it as follows:
-* Deploy `Cocomputation`:
+* Deployed `Cocomputation`:
     * Testnet: The address of `Cocomputation` contract deployed on Testnet is `0xc133efc4b43676a0`. 
-    * Emulator: Deploy `Cocomputation` if you are in [emulator environment](#emulator).
-```sh
-cd exampleApp/computation/
-
-flow project deploy --update
-```
 
 ### [Requester](./exampleApp/computation/contracts/Cocomputation.cdc#L36)
 A `Requester` call smart contracts deployed on other chains to make a simple computation and get the result through `callback`(The [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L47)).
 
 * Call out
 ```sh
-flow transactions send ./transactions/CallOut.cdc <"toChain"> <"contract name"> <"action name"> '[1, 2, 3, 4, 5]' --signer <your account> -n testnet
+flow transactions send ./transactions/CallOut.cdc <"toChain"> <"contract name on other chains"> <"action name"> '[1, 2, 3, 4, 5]' --signer <your account> -n testnet
 ```
-* (to be done) wait for result coming back
+* Wait for result coming back
 * Check the results
 ```sh
 flow scripts execute ./scripts/getComputeResults.cdc <'Cocomputation' deployed account> -n testnet
@@ -181,9 +177,9 @@ flow scripts execute ./scripts/getComputeResults.cdc <'Cocomputation' deployed a
 ### [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L88)
 A `ComputationServer` receive remote invocations from smart contracts deployed on other chains through [callMe](./exampleApp/computation/contracts/Cocomputation.cdc#L95), make a computation, and [response the result](./exampleApp/computation/contracts/Cocomputation.cdc#L110).  
 
-* (to be done) wait for computation task coming
+* Wait for computation task coming
 * Check received tasks
 ```sh
 flow scripts execute ./scripts/getComputeTasks.cdc <'Cocomputation' deployed account>
 ```
-* (to be done) Check the computation results on calling chains
+* Check the computation results on calling chains
