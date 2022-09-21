@@ -1,6 +1,6 @@
 # Dante Protocol SDK for Flow
 ## Introduction
-This is the SDK with which developers can easily build their Omnichain dApps based on Dante Protocol Stack on Flow. It's a little bit different from SDKs in other technology stack, the `flow-sdk` are quite convenient and developers only need to create their own [Submitter](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L39) and [SentMessageVault](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L163) resources to make smart contracts invocation and send messages out to other chains. Similarly, they only need to create their own [ReceivedMessageVault](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L194) to receive resouce calls and messages from other chains.  
+This is the SDK with which developers can easily build their Omnichain dApps based on Dante Protocol Stack on Flow. It's a little bit different from SDKs in other technology stack, the `flow-sdk` are quite convenient and even if with the `low-level-api` developers only need to create their own [Submitter](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L39) and [SentMessageVault](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/SentMessageContract.cdc#L163) resources to make smart contracts invocation and send messages out to other chains. Similarly, they only need to create their own [ReceivedMessageVault](https://github.com/dantenetwork/cadence-contracts/blob/45ced3d891c7a680e6750870e46b33c2dc609a64/contracts/ReceivedMessageContract.cdc#L194) to receive resouce calls and messages from other chains.  
 More details can be seen at [High-Level-API](#high-level-api) and [Low-Level-API](#low-level-api), and we provide two typical examples at [examples](#examples);
 
 ## Index
@@ -14,32 +14,13 @@ More details can be seen at [High-Level-API](#high-level-api) and [Low-Level-API
 ## Environment
 ### Deployment
 #### Testnet
-Officially, we have deployed the smart contract at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
+Officially, we have deployed the Protocol Stack at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
+We also deploy the Protocol Stack at `` on Rinkeby for dev-test. If you want to build your own Omnichain dApps, you can see more details at [solidity sdk tutorial]().
 
 **Note that the `testnet-account` in [flow.json](./flow.json) is just for dev-testing, which may have already been used. So remember to create your own account to make operation on Testnet. You can follow this [tutorial](https://developers.flow.com/tools/flow-cli/create-accounts) to create a new account on Testnet and fund faucet [here](https://testnet-faucet.onflow.org/fund-account)** 
 
 #### Emulator
-To use emulator for testing, we need to clone the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts/tree/main), start emulator, and deploy first:
-* Deploy on emulator
-```sh
-git clone https://github.com/dantenetwork/cadence-contracts
-
-cd cadence-contracts
-
-flow emulator --verbose
-
-flow project deploy --update
-
-```
-* Prapare an account to operate  
-After started the emulator, create an account and transfer some simu-Flow to it for gas as follows:
-```sh
-flow accounts create --key 81262aa27f1630ccf1293300e8e1d9a6ba542dffa796b860d53873867175e9d31bd7b7581d2f200f9c3dfdbc10ae912ff036946981e3d8996a14f186d20e3e2f
-
-# transfer Flow Token
-flow transactions send ./transactions/test/transferFlow.cdc 100.0 0x01cf0e2f2f715450
-```
-As we have set the address `0x01cf0e2f2f715450` as `emulator-Alice` in `flow.json`, directly executing the scripts above will work well and we can use account `emulator-Alice` in emulator to make operation now.
+As an Omnichain infrastructure, it's necessary to cooperate with other chains and in order to test in the local environment, there needs a simulator. Currently, the simulator is under developing. So we recommend you to choose the Testnet version to develop your dApps.
 
 ## High-Level API
 The high-level api provides a very convenient way to create `resources`. When the contract [SDKUtility](./contracts/SDKUtility.cdc) is deployed with your own account, all omnichain resources including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter` are created, saved and registered by the constructor. More over, `SDKUtility` provides some methods with `access(account)` to help developers implement cross-chain operations. The `access(account)` means only the deployed account related smart contracts and resources has the permission to call these methods.  
