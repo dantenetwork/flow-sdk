@@ -14,8 +14,8 @@ More details can be seen at [High-Level-API](#high-level-api) and [Low-Level-API
 ## Environment
 ### Deployment
 #### Testnet
-Officially, we have deployed the Protocol Stack at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
-We also deploy the Protocol Stack at `` on Rinkeby for dev-test. If you want to build your own Omnichain dApps, you can see more details at [solidity sdk tutorial]().
+* Officially, we have deployed the Protocol Stack at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
+* We also deploy the Protocol Stack at [0x2999fe13d3CAa63C0bC523E8D5b19A265637dbd2](https://github.com/dantenetwork/solidity-contract-template/tree/flow-rinkeby#cross-chain-contract-address) on Rinkeby for dev-test. If you want to build your own Omnichain smart contracts on Rinkeby, you can see more details at [solidity sdk tutorial](https://github.com/dantenetwork/solidity-contract-template/tree/flow-rinkeby).
 
 **Note that the `testnet-account` in [flow.json](./flow.json) is just for dev-testing, which may have already been used. So remember to create your own account to make operation on Testnet. You can follow this [tutorial](https://developers.flow.com/tools/flow-cli/create-accounts) to create a new account on Testnet and fund faucet [here](https://testnet-faucet.onflow.org/fund-account)** 
 
