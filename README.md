@@ -189,7 +189,8 @@ Note that currently this NFT case is not a real Omniverse NFT, instead it works 
 
 Any NFT following standard `NonfungibleToken.NFT` on Flow can travel out to other chains.
 
-* From Flow to Rinkeby
+### From Flow to Rinkeby
+* Mint the NFT on Flow and send out to Rinkeby
 ```sh
 cd exampleApp/omniNFT
 
@@ -207,6 +208,20 @@ flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "f0ED116DF87
 
 ```
 
-Waiting for Rinkeby received
+* Waiting for Rinkeby received and operate it on Rinkeby
+(Operations on rinkeby)
 
+
+* Claim NFT on Flow
+```sh
+# operate in './exampleApp/omniNFT'
+# cd exampleApp/omniNFT
+
+# Claim nft coming back from rinkeby
+flow transactions send ./transactions/claimNFT.cdc 8 '<your hash answer to claim NFT on Flow>' --signer <your account in flow.json> -n testnet
+
+# check NFT 
+flow scripts execute ./scripts/checkNFT.cdc 0x86fc6f40cd9f9c66 -n testnet
+
+```
 

@@ -6,7 +6,7 @@ flow transactions send ./transactions/initExampleCollection.cdc --signer testnet
 flow transactions send ./transactions/destroyExampleCollection.cdc --signer testnet-account -n testnet
 
 # mint NFT
-flow transactions send ./transactions/freeMintExample.cdc "Universe NFT 1" --signer testnet-account -n testnet
+flow transactions send ./transactions/freeMintExample.cdc "Universe NFT 8" --signer testnet-account -n testnet
 
 # check NFT 
 flow scripts execute ./scripts/checkNFT.cdc 0x86fc6f40cd9f9c66 -n testnet
@@ -15,4 +15,7 @@ flow scripts execute ./scripts/checkNFT.cdc 0x86fc6f40cd9f9c66 -n testnet
 flow transactions send ./transactions/destroyExampleNFT.cdc 0  --signer testnet-account -n testnet
 
 # send nft out
-flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "f0ED116DF876512F193195a7b3331F613030B852" '9bee6fc1' "hello nika" "04e5d0f5478849C94F02850bFF91113d8F02864D" 3 --signer testnet-account -n testnet
+flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "8Ec8b47771EA452f206B441A71e0a166F348C711" '9bee6fc1' "hello nika" "04e5d0f5478849C94F02850bFF91113d8F02864D" 7 --signer testnet-account -n testnet
+
+# claim nft
+flow transactions send ./transactions/claimNFT.cdc 8 'hello nika' --signer testnet-account -n testnet
