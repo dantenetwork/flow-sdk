@@ -183,3 +183,30 @@ A `ComputationServer` receive remote invocations from smart contracts deployed o
 flow scripts execute ./scripts/getComputeTasks.cdc <'Cocomputation' deployed account>
 ```
 * Check the computation results on calling chains
+
+## [Omniverse NFT]()
+Note that currently this NFT case is not a real Omniverse NFT, instead it works as a normal NFT bridge. That is, when an NFT transferred from Flow to Rinkeby, it is locked on Flow and minted on Rinkeby, and vice versa.
+
+Any NFT following standard `NonfungibleToken.NFT` on Flow can travel out to other chains.
+
+* From Flow to Rinkeby
+```sh
+cd exampleApp/omniNFT
+
+# initiallize collection
+flow transactions send ./transactions/initExampleCollection.cdc --signer <your account in flow.json> -n testnet
+
+# free mint NFT
+flow transactions send ./transactions/freeMintExample.cdc "<your description of the NFT>" --signer <your account in flow.json> -n testnet
+
+# check NFT 
+flow scripts execute ./scripts/checkNFT.cdc 0x86fc6f40cd9f9c66 -n testnet
+
+# send nft out
+flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "f0ED116DF876512F193195a7b3331F613030B852" '9bee6fc1' "<your hash question to claim NFT on rinkeby>" "04e5d0f5478849C94F02850bFF91113d8F02864D" 1 --signer <your account in flow.json> -n testnet
+
+```
+
+Waiting for Rinkeby received
+
+
