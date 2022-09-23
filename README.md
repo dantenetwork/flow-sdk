@@ -185,9 +185,10 @@ flow scripts execute ./scripts/getComputeTasks.cdc <'Cocomputation' deployed acc
 * Check the computation results on calling chains
 
 ## [Omniverse NFT]()
-Note that currently this NFT case is not a real Omniverse NFT, instead it works as a normal NFT bridge. That is, when an NFT transferred from Flow to Rinkeby, it is locked on Flow and minted on Rinkeby, and vice versa.
+Note that currently this NFT case is not a real Omniverse NFT, instead it works as a normal NFT bridge. That is, when an NFT transferred from Flow to Rinkeby, it is locked on Flow and minted on Rinkeby, and vice versa.  
+In this case, any NFT following standard `NonfungibleToken.NFT` on Flow can travel out to other chains.  
 
-Any NFT following standard `NonfungibleToken.NFT` on Flow can travel out to other chains.
+We are preparing a real omniverse NFT nowadays, please look forward to.
 
 ### From Flow to Rinkeby
 * Mint the NFT on Flow and send out to Rinkeby
