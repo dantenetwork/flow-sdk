@@ -16,6 +16,7 @@ More details can be seen at [High-Level-API](#high-level-api) and [Low-Level-API
 #### Testnet
 * Officially, we have deployed the Protocol Stack at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
 * We also deploy the Protocol Stack at [0x2999fe13d3CAa63C0bC523E8D5b19A265637dbd2](https://github.com/dantenetwork/solidity-contract-template/tree/flow-rinkeby#cross-chain-contract-address) on Rinkeby for dev-test. If you want to build your own Omnichain smart contracts on Rinkeby, you can see more details at [solidity sdk tutorial](https://github.com/dantenetwork/solidity-contract-template/tree/flow-rinkeby).
+* As Opensea does not supprot Rinkeby currently, we also deployed the Protocol Stack at `0xf61C4699B99d1988EB235AF06F270029D9Ed3b63` on PlatON, and use [NFTScan](https://platon.nftscan.com/) instead. 
 
 **Note that the `testnet-account` in [flow.json](./flow.json) is just for dev-testing, which may have already been used. So remember to create your own account to make operation on Testnet. You can follow this [tutorial](https://developers.flow.com/tools/flow-cli/create-accounts) to create a new account on Testnet and fund faucet [here](https://testnet-faucet.onflow.org/fund-account)** 
 
@@ -142,7 +143,7 @@ You can try it as follows:
 ```sh
 cd exampleApp/greetings/
 
-flow transactions send ./transactions/sendMessageOut.cdc <"toChain"> <"contract name on other chains"> <"action name"> <'SentMessageVault' address> --signer <your account> -n testnet
+flow transactions send ./transactions/sendMessageOut.cdc <"toChain", e.g., "RINKEBY"> <"contract name on other chains", e.g.,  "[113,55,88,82,97,110,247,25,107,7,186,63,22,128,91,81,46,33,129,62]"> <"action name", e.g.,  "[45,67,104,34]"> <'SentMessageVault' address, e.g., 0x86fc6f40cd9f9c66> --signer <your account in flow.json, e.g., testnet-account> -n testnet
 ```
 * Check the message received on the other chains.  
 
@@ -166,12 +167,12 @@ A `Requester` call smart contracts deployed on other chains to make a simple com
 
 * Call out
 ```sh
-flow transactions send ./transactions/CallOut.cdc <"toChain"> <"contract name on other chains"> <"action name"> '[1, 2, 3, 4, 5]' --signer <your account> -n testnet
+flow transactions send ./transactions/CallOut.cdc <"toChain", e.g., "RINKEBY"> <"contract name on other chains", e.g., "[106,168,156,101,73,7,68,90,53,218,17,9,197,253,122,117,241,84,110,246]"> <"action name", e.g., "[71, 229, 10, 66]"> <numbers to be calculate, e.g., '[1, 2, 3, 4, 5]'> --signer <your account in flow.json, e.g., testnet-operator> -n testnet
 ```
 * Wait for result coming back
 * Check the results
 ```sh
-flow scripts execute ./scripts/getComputeResults.cdc <'Cocomputation' deployed account> -n testnet
+flow scripts execute ./scripts/getComputeResults.cdc <'Cocomputation' deployed account, e.g., 0xc133efc4b43676a0> -n testnet
 ```
 
 ### [ComputationServer](./exampleApp/computation/contracts/Cocomputation.cdc#L88)
@@ -180,7 +181,7 @@ A `ComputationServer` receive remote invocations from smart contracts deployed o
 * Wait for computation task coming
 * Check received tasks
 ```sh
-flow scripts execute ./scripts/getComputeTasks.cdc <'Cocomputation' deployed account>
+flow scripts execute ./scripts/getComputeTasks.cdc <'Cocomputation' deployed account, e.g., 0xc133efc4b43676a0>
 ```
 * Check the computation results on calling chains
 
