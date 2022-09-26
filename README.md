@@ -190,28 +190,46 @@ In this case, any NFT following standard `NonfungibleToken.NFT` on Flow can trav
 
 We are preparing a real omniverse NFT nowadays, please look forward to.
 
-### From Flow to Rinkeby
-* Mint the NFT on Flow and send out to Rinkeby
+### From Flow to remote chains
+* Mint the NFT on Flow and send out to the remote chain
+* Attention, remember to query the uuid after free-mint, which is necessary for claiming NFT on the remote chain. The uuid is the resource ID on Flow. As it's unique and the omniverse NFT will be based on Flow in the future, we use it as the NFT id on the other chains.
 ```sh
 cd exampleApp/omniNFT
 
 # initiallize collection
-flow transactions send ./transactions/initExampleCollection.cdc --signer <your account in flow.json> -n testnet
+flow transactions send ./transactions/initExampleCollection.cdc --signer <your account in flow.json, e.g., testnet-account> -n testnet
 
 # free mint NFT
-flow transactions send ./transactions/freeMintExample.cdc "<your description of the NFT>" --signer <your account in flow.json> -n testnet
+flow transactions send ./transactions/freeMintExample.cdc "<your description of the NFT>" --signer <your account in flow.json, e.g., testnet-account> -n testnet
 
-# check NFT 
-flow scripts execute ./scripts/checkNFT.cdc 0x86fc6f40cd9f9c66 -n testnet
+# check the details of the NFTs you own
+flow scripts execute ./scripts/checkNFT.cdc <your account, e.g., 0x86fc6f40cd9f9c66> -n testnet
+
+# query the uuid of the NFT, which is used as the NFT id on other chains
+flow scripts execute ./scripts/queryUUID.cdc <your account, e.g., 0x86fc6f40cd9f9c66> <NFT id, e.g., 12> -n testnet
+
+# get the ids of the NFTs you own 
+flow scripts execute ./scripts/queryNFTIDs.cdc <your account, e.g., 0x86fc6f40cd9f9c66> -n testnet
+
 
 # send nft out
-flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "f0ED116DF876512F193195a7b3331F613030B852" '9bee6fc1' "<your hash question to claim NFT on rinkeby>" "04e5d0f5478849C94F02850bFF91113d8F02864D" 1 --signer <your account in flow.json> -n testnet
+#flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "f0ED116DF876512F193195a7b3331F613030B852" '9bee6fc1' "<your hash question to claim NFT on rinkeby>" "04e5d0f5478849C94F02850bFF91113d8F02864D" 1 --signer <your account in flow.json> -n testnet
+
+# As Opensea does not support Rinkeby currently, we recommend you use the following commands to make the taste.
+# @"PLATONEVM" is the remote chain name
+# @"AF43344A48EBC1629d7385B71086E067E73cEd63" is the remote NFT contract address
+# @'9bee6fc1' is the remote receiver handle
+# @"hello nika" is the hash answer to claim the NFT on the remote chain
+# @"04e5d0f5478849C94F02850bFF91113d8F02864D" is the receiver address on the remote chain
+# @<NFT id> is the NFT id to be sent out, which can be got by the above command
+flow transactions send ./transactions/sendNFT2Opensea.cdc "PLATONEVM" "3800797289ad8F2d5760f5B27197cfc59C653358" '9bee6fc1' "hello nika" "04e5d0f5478849C94F02850bFF91113d8F02864D" <NFT id, e.g., 12> --signer <your account in flow.json, e.g., testnet-account> -n testnet
 
 ```
 
-* Waiting for Rinkeby received and operate it on Rinkeby
-(Operations on rinkeby)
-
+* [Operations on Rinkeby](https://github.com/dantenetwork/omniverse-nft-ethereum)
+    * Waiting for Rinkeby received and operate it on Rinkeby
+    * Use `uuid` to claim NFT on Rinkeby
+    * Send the NFT back to Flow
 
 * Claim NFT on Flow
 ```sh
@@ -219,10 +237,14 @@ flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "f0ED116DF87
 # cd exampleApp/omniNFT
 
 # Claim nft coming back from rinkeby
-flow transactions send ./transactions/claimNFT.cdc 8 '<your hash answer to claim NFT on Flow>' --signer <your account in flow.json> -n testnet
+# @'<your hash answer>' is related to the hash question setted on the remote chain when transferring this NFT back to Flow
+flow transactions send ./transactions/claimNFT.cdc <NFT id, e.g., 12> '<your hash answer to claim NFT on Flow>' --signer <your account in flow.json, e.g., testnet-account> -n testnet
+
+# get the ids of the NFTs you own 
+flow scripts execute ./scripts/queryNFTIDs.cdc <your account, e.g., 0x86fc6f40cd9f9c66> -n testnet
 
 # check NFT 
-flow scripts execute ./scripts/checkNFT.cdc 0x86fc6f40cd9f9c66 -n testnet
+flow scripts execute ./scripts/checkNFT.cdc <your account, e.g., 0x86fc6f40cd9f9c66> -n testnet
 
 ```
 
