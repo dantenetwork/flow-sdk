@@ -23,7 +23,7 @@ flow transactions send ./transactions/sendNFT2Opensea.cdc "RINKEBY" "8Ec8b47771E
 flow transactions send ./transactions/sendNFT2Opensea.cdc "PLATONEVM" "3800797289ad8F2d5760f5B27197cfc59C653358" '9bee6fc1' "hello nika" "04e5d0f5478849C94F02850bFF91113d8F02864D" 12 --signer testnet-account -n testnet
 
 # query the uuid of the NFT, which is used as the NFT id on other chains
-flow scripts execute ./scripts/queryUUID.cdc 0x86fc6f40cd9f9c66 11 -n testnet
+flow scripts execute ./scripts/queryUUID.cdc 0x86fc6f40cd9f9c66 12 -n testnet
 
 # claim nft
-flow transactions send ./transactions/claimNFT.cdc 8 'hello nika' --signer testnet-account -n testnet
+flow transactions send ./transactions/claimNFT.cdc 12 'hello nika' --signer testnet-account -n testnet
