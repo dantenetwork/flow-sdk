@@ -227,9 +227,9 @@ flow transactions send ./transactions/sendNFT2Opensea.cdc "PLATONEVM" "380079728
 
 ```
 
-* [Operations on Rinkeby](https://github.com/dantenetwork/omniverse-nft-ethereum)
-    * Waiting for Rinkeby received and operate it on Rinkeby
-    * Use `uuid` to claim NFT on Rinkeby
+* [Operations on PlatON](https://github.com/dantenetwork/omniverse-nft-ethereum)
+    * Waiting for PlatON received and operate it on PlatON
+    * Use `uuid` to claim NFT on PlatON
     * Send the NFT back to Flow
 
 * Claim NFT on Flow
