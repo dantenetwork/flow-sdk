@@ -49,7 +49,7 @@ pub contract Cocomputation {
                 if let val = rst.value as? UInt32 {
                     if let context = ContextKeeper.getContext() {
                         log("Receiving session id is: ".concat(context.session.id.toString()));
-                        if self.recorder.containsKey(context.session.id)  && (self.currentID == context.session.id) {
+                        if self.recorder.containsKey(context.session.id)  /*&& (self.currentID == context.session.id)*/ {
                             self.recorder[context.session.id]!.setResults(results: val);
                         } else {
                             log("invalid session id");
