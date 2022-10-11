@@ -1,7 +1,7 @@
 import Greetings from "../contracts/Greetings.cdc"
 
 transaction (toChain: String, 
-            contractName: [UInt8], 
+            contractName: String, 
             actionName: [UInt8],
             senderAddr: Address) {
 
@@ -11,7 +11,7 @@ transaction (toChain: String,
 
     execute {
         Greetings.sendGreeting(toChain: toChain, 
-                                contractName: contractName, 
+                                contractName: contractName.decodeHex(), 
                                 actionName: actionName,
                                 greetingMessage: "Hello nika", 
                                 senderAddr: senderAddr, 

@@ -143,7 +143,7 @@ You can try it as follows:
 ```sh
 cd exampleApp/greetings/
 
-flow transactions send ./transactions/sendMessageOut.cdc <"toChain", e.g., "RINKEBY"> <"contract name on other chains", e.g.,  "[113,55,88,82,97,110,247,25,107,7,186,63,22,128,91,81,46,33,129,62]"> <"action name", e.g.,  "[45,67,104,34]"> <'SentMessageVault' address, e.g., 0x86fc6f40cd9f9c66> --signer <your account in flow.json, e.g., testnet-account> -n testnet
+flow transactions send ./transactions/sendMessageOut.cdc <"toChain", e.g., "SHIBUYA"> <"contract name on other chains", e.g.,  "8aee7ff290d07e8f75901e360b8dd84dd169d0a12df9d1bf0cdbbd56b4a00975"> <"action selector", e.g.,  "[12, 114, 77, 194]"> <'SentMessageVault' address, e.g., 0x86fc6f40cd9f9c66> --signer <your account in flow.json, e.g., testnet-account> -n testnet
 ```
 * Check the message received on the other chains.  
 
@@ -167,7 +167,7 @@ A `Requester` call smart contracts deployed on other chains to make a simple com
 
 * Call out
 ```sh
-flow transactions send ./transactions/CallOut.cdc <"toChain", e.g., "RINKEBY"> <"contract name on other chains", e.g., "[106,168,156,101,73,7,68,90,53,218,17,9,197,253,122,117,241,84,110,246]"> <"action name", e.g., "[71, 229, 10, 66]"> <numbers to be calculate, e.g., '[1, 2, 3, 4, 5]'> --signer <your account in flow.json, e.g., testnet-operator> -n testnet
+flow transactions send ./transactions/CallOut.cdc <"toChain", e.g., "SHIBUYA"> <"contract name on other chains", e.g., "53e46958440e1c874f84ec3740ce1e96bc8af898cfa808a6cd138dce43718f4c"> <"action selector", e.g., "[0, 0, 0, 1]"> <numbers to be calculate, e.g., '[1, 2, 3, 4, 5]'> --signer <your account in flow.json, e.g., testnet-operator> -n testnet
 ```
 * Wait for result coming back
 * Check the results
