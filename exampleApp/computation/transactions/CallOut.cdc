@@ -1,7 +1,7 @@
 import Cocomputation from "../contracts/Cocomputation.cdc"
 
 transaction (toChain: String, 
-            contractName: [UInt8], 
+            contractName: String, 
             actionName: [UInt8], 
             inputs: [UInt32]) {
 
@@ -11,8 +11,9 @@ transaction (toChain: String,
 
     execute {
         Cocomputation.testCallOut(toChain: toChain, 
-                                    contractName: contractName, 
+                                    contractName: contractName.decodeHex(), 
                                     actionName: actionName, 
                                     numbers: inputs);
     }
 }
+ 
