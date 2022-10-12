@@ -1,14 +1,14 @@
-///*
+/*
 import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
 import MessageProtocol from 0xf8d6e0586b0a20c7;
 import ContextKeeper from 0xf8d6e0586b0a20c7;
-//*/
+*/
 
-/*
+///*
 import ReceivedMessageContract from 0x5f37faed5f558aca;
 import MessageProtocol from 0x5f37faed5f558aca;
 import ContextKeeper from 0x5f37faed5f558aca;
-*/
+//*/
 
 import SDKUtility from "./SDKUtility.cdc";
 
@@ -48,11 +48,14 @@ pub contract Cocomputation {
             if let rst = data.getItem(name: "result") {
                 if let val = rst.value as? UInt32 {
                     if let context = ContextKeeper.getContext() {
-                        log("Receiving session id is: ".concat(context.session.id.toString()));
-                        if self.recorder.containsKey(context.session.id)  && (self.currentID == context.session.id) {
-                            self.recorder[context.session.id]!.setResults(results: val);
-                        } else {
-                            log("invalid session id");
+                        // In this example, we limited the chain we can interact. We can get that which is the caller chain from the context
+                        if context.fromChain == "SHIBUYA" {
+                            log("Receiving session id is: ".concat(context.session.id.toString()));
+                            if self.recorder.containsKey(context.session.id)  && (self.currentID == context.session.id) {
+                                self.recorder[context.session.id]!.setResults(results: val);
+                            } else {
+                                log("invalid session id");
+                            }
                         }
                     }
                 }
@@ -63,6 +66,11 @@ pub contract Cocomputation {
                                 contractName: [UInt8], 
                                 actionName: [UInt8], 
                                 numbers: [UInt32]) {
+            // In this example, we limited the chain we can interact
+            if toChain != "SHIBUYA" {
+                panic("In this example, we limited the chain we can interact");
+            }
+            
             let msgPL = MessageProtocol.MessagePayload();
 
             let msgItem = MessageProtocol.createMessageItem(name: "nums", type: MessageProtocol.MsgType.cdcVecU32, value: numbers);
