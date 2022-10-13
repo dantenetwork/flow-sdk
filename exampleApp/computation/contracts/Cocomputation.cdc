@@ -34,25 +34,32 @@ pub contract Cocomputation {
     }
 
     pub resource Requester: ReceivedMessageContract.Callee {
-        pub let recorder: {UInt128: RequestRecord};
+        pub let recorder: {String: [RequestRecord]};
         pub let link: String;
-        priv var currentID: UInt128?;
 
         init(link: String) {
             self.recorder = {};
             self.link = link;
-            self.currentID = nil;
         }
 
         pub fun callMe(data: MessageProtocol.MessagePayload) {
             if let rst = data.getItem(name: "result") {
                 if let val = rst.value as? UInt32 {
                     if let context = ContextKeeper.getContext() {
+                        log("Receiving from chain: ".concat(context.fromChain));
                         log("Receiving session id is: ".concat(context.session.id.toString()));
-                        if self.recorder.containsKey(context.session.id)  /*&& (self.currentID == context.session.id)*/ {
-                            self.recorder[context.session.id]!.setResults(results: val);
+                        if let requestRecRef: &[RequestRecord] = (&self.recorder[context.fromChain] as &[RequestRecord]?) {
+                            var idx = 0;
+                            while idx < requestRecRef.length {
+                                if requestRecRef[idx].sessionID == context.session.id {
+                                    requestRecRef[idx].setResults(results: val);
+                                    break;
+                                }
+                                
+                                idx = idx + 1;
+                            }
                         } else {
-                            log("invalid session id");
+                            log("invalid response");
                         }
                     }
                 }
@@ -77,11 +84,13 @@ pub contract Cocomputation {
                                 commitment: nil) {
                 log("Calling out session id is: ".concat(context.session.id.toString()));
                 let record = RequestRecord(sessionID: context.session.id);
-                record.setInput(input: numbers);
-                self.recorder[context.session.id] = record;         
-                self.currentID = context.session.id;     
+                record.setInput(input: numbers); 
+                if self.recorder.containsKey(toChain) {
+                    self.recorder[toChain]!.append(record);
+                } else {
+                    self.recorder[toChain] = [record];
+                }       
             }
-            
         }
     }
 
