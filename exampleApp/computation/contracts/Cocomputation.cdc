@@ -80,7 +80,7 @@ pub contract Cocomputation {
                                 contractName: contractName, 
                                 actionName: actionName, 
                                 data: msgPL,
-                                callback: self.link.utf8, 
+                                callback: self.link, 
                                 commitment: nil) {
                 log("Calling out session id is: ".concat(context.session.id.toString()));
                 let record = RequestRecord(sessionID: context.session.id);

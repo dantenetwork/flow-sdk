@@ -1,10 +1,10 @@
 /*
 import SentMessageContract from 0xf8d6e0586b0a20c7;
-import CrossChain from 0xf8d6e0586b0a20c7;
+import Regestery from 0xf8d6e0586b0a20c7;
 */
 ///*
 import SentMessageContract from 0x5f37faed5f558aca;
-import CrossChain from 0x5f37faed5f558aca;
+import Regestery from 0x5f37faed5f558aca;
 //*/
 
 transaction () {
@@ -15,7 +15,7 @@ transaction () {
         acct.unlink(/public/sentMessageVault);
         acct.link<&{SentMessageContract.SentMessageInterface, SentMessageContract.AcceptorFace}>(/public/sentMessageVault, target: /storage/sentMessageVault);
 
-        CrossChain.registerSendAccount(address: acct.address, link: "sentMessageVault");
+        Regestery.registerSendAccount(address: acct.address, link: "sentMessageVault");
     }
 
     execute {

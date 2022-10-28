@@ -1,26 +1,30 @@
+///*
 import SentMessageContract from 0xf8d6e0586b0a20c7;
 import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
 import MessageProtocol from 0xf8d6e0586b0a20c7;
 import ContextKeeper from 0xf8d6e0586b0a20c7;
-import CrossChain from 0xf8d6e0586b0a20c7;
+import Regestery from 0xf8d6e0586b0a20c7;
+//*/
 
-//import SentMessageContract from 0x5f37faed5f558aca;
-//import ReceivedMessageContract from 0x5f37faed5f558aca;
-//import MessageProtocol from 0x5f37faed5f558aca;
-//import ContextKeeper from 0x5f37faed5f558aca;
-//import CrossChain from 0x5f37faed5f558aca;
+/*
+import SentMessageContract from 0x5f37faed5f558aca;
+import ReceivedMessageContract from 0x5f37faed5f558aca;
+import MessageProtocol from 0x5f37faed5f558aca;
+import ContextKeeper from 0x5f37faed5f558aca;
+import Regestery from 0x5f37faed5f558aca;
+*/
 
 pub contract SDKUtility {
     init() {
         let recver <- ReceivedMessageContract.createReceivedMessageVault();
         self.account.save(<- recver, to: /storage/receivedMessageVault);
         self.account.link<&{ReceivedMessageContract.ReceivedMessageInterface}>(/public/receivedMessageVault, target: /storage/receivedMessageVault);
-        CrossChain.registerRecvAccount(address: self.account.address, link: "receivedMessageVault");
+        Regestery.registerRecvAccount(address: self.account.address, link: "receivedMessageVault");
 
         let sendVault <- SentMessageContract.createSentMessageVault();
         self.account.save(<- sendVault, to: /storage/sentMessageVault);
         self.account.link<&{SentMessageContract.SentMessageInterface, SentMessageContract.AcceptorFace}>(/public/sentMessageVault, target: /storage/sentMessageVault);
-        CrossChain.registerSendAccount(address: self.account.address, link: "sentMessageVault");
+        Regestery.registerSendAccount(address: self.account.address, link: "sentMessageVault");
 
         let submitter <- SentMessageContract.createMessageSubmitter();
         self.account.save(<- submitter, to: /storage/msgSubmitter);
@@ -32,7 +36,7 @@ pub contract SDKUtility {
                                 contractName: [UInt8], 
                                 actionName: [UInt8], 
                                 data: MessageProtocol.MessagePayload,
-                                callback: [UInt8]?, 
+                                callback: String?, 
                                 commitment: [UInt8]?): ContextKeeper.Context? {
         let msg = SentMessageContract.msgToSubmit(toChain: toChain, 
                                                     sqos: sqos, 
