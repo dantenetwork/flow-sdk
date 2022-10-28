@@ -102,6 +102,7 @@ pub contract Cocomputation {
         }
 
         pub fun callMe(data: MessageProtocol.MessagePayload) {
+            // panic("Just test error remote call");
             if let context = ContextKeeper.getContext() {
                 if let item = data.getItem(name: "nums") {
                     var sum: UInt32 = 0;
