@@ -2,6 +2,7 @@
 import ReceivedMessageContract from 0xf8d6e0586b0a20c7;
 import MessageProtocol from 0xf8d6e0586b0a20c7;
 import ContextKeeper from 0xf8d6e0586b0a20c7;
+import OmniverseInformation from 0xf8d6e0586b0a20c7;
 //*/
 
 /*
@@ -17,11 +18,13 @@ pub contract Cocomputation {
         pub let sessionID: UInt128;
         pub var input: [UInt32]?;
         pub var results: UInt32?;
+        pub var err: UInt8?;
 
         init(sessionID: UInt128) {
             self.sessionID = sessionID;
             self.input = nil;
             self.results = nil;
+            self.err = nil;
         }
 
         pub fun setInput(input: [UInt32]) {
@@ -30,6 +33,10 @@ pub contract Cocomputation {
 
         pub fun setResults(results: UInt32) {
             self.results = results;
+        }
+
+        pub fun setErr(err: UInt8) {
+            self.err = err;
         }
     }
 
@@ -53,6 +60,26 @@ pub contract Cocomputation {
                             while idx < requestRecRef.length {
                                 if requestRecRef[idx].sessionID == context.session.id {
                                     requestRecRef[idx].setResults(results: val);
+                                    break;
+                                }
+                                
+                                idx = idx + 1;
+                            }
+                        } else {
+                            log("invalid response");
+                        }
+                    }
+                }
+            } else if let rst = data.getItem(name: OmniverseInformation.item_err) {
+                if let val = rst.value as? UInt8 {
+                    if let context = ContextKeeper.getContext() {
+                        log("Receiving from chain: ".concat(context.fromChain));
+                        log("Receiving session id is: ".concat(context.session.id.toString()));
+                        if let requestRecRef: &[RequestRecord] = (&self.recorder[context.fromChain] as &[RequestRecord]?) {
+                            var idx = 0;
+                            while idx < requestRecRef.length {
+                                if requestRecRef[idx].sessionID == context.session.id {
+                                    requestRecRef[idx].setErr(err: val);
                                     break;
                                 }
                                 

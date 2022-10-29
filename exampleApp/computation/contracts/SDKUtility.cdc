@@ -67,6 +67,23 @@ pub contract SDKUtility {
         return self.self_message_send_out(msg: msg);
     }
 
+    access(account) fun respondOut(toChain: String, 
+                                sqos: MessageProtocol.SQoS, 
+                                contractName: [UInt8], 
+                                actionName: [UInt8], 
+                                data: MessageProtocol.MessagePayload): ContextKeeper.Context? {
+        let msg = SentMessageContract.msgToSubmit(toChain: toChain, 
+                                                    sqos: sqos, 
+                                                    contractName: contractName, 
+                                                    actionName: actionName, 
+                                                    data: data, 
+                                                    callType: 3, 
+                                                    callback: nil, 
+                                                    commitment: nil, 
+                                                    answer: nil);
+        return self.self_message_send_out(msg: msg);
+    }
+
     access(account) fun self_message_send_out(msg: SentMessageContract.msgToSubmit): ContextKeeper.Context? {
         let submitterRef = self.account.borrow<&SentMessageContract.Submitter>(from: /storage/msgSubmitter)!;
         return submitterRef.submitWithAuth(msg, 
