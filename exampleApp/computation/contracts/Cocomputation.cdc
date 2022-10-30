@@ -144,7 +144,7 @@ pub contract Cocomputation {
                                                                     value: sum);
                     msgPL.addItem(item: msgItem!);
 
-                    SDKUtility.sendOut(toChain: context.fromChain, 
+                    SDKUtility.respondOut(toChain: context.fromChain, 
                                         sqos: context.sqos, 
                                         contractName: context.sender, 
                                         actionName: context.session.callback!, 
