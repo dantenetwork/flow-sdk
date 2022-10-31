@@ -50,43 +50,44 @@ pub contract Cocomputation {
         }
 
         pub fun callMe(data: MessageProtocol.MessagePayload) {
-            if let rst = data.getItem(name: "result") {
-                if let val = rst.value as? UInt32 {
-                    if let context = ContextKeeper.getContext() {
-                        log("Receiving from chain: ".concat(context.fromChain));
-                        log("Receiving session id is: ".concat(context.session.id.toString()));
-                        if let requestRecRef: &[RequestRecord] = (&self.recorder[context.fromChain] as &[RequestRecord]?) {
-                            var idx = 0;
-                            while idx < requestRecRef.length {
-                                if requestRecRef[idx].sessionID == context.session.id {
-                                    requestRecRef[idx].setResults(results: val);
-                                    break;
+            if let context = ContextKeeper.getContext() {
+                log("Receiving from chain: ".concat(context.fromChain));
+                log("Receiving session id is: ".concat(context.session.id.toString()));
+                log("Receiving session type is: ".concat(context.session.type.toString()));
+
+                if UInt8(3) == context.session.type {
+                    // seccessful callback results
+                    if let rst = data.getItem(name: "result") {
+                        if let val = rst.value as? UInt32 {
+                            if let requestRecRef: &[RequestRecord] = (&self.recorder[context.fromChain] as &[RequestRecord]?) {
+                                var idx = 0;
+                                while idx < requestRecRef.length {
+                                    if requestRecRef[idx].sessionID == context.session.id {
+                                        requestRecRef[idx].setResults(results: val);
+                                        break;
+                                    }
+                                    
+                                    idx = idx + 1;
                                 }
-                                
-                                idx = idx + 1;
                             }
-                        } else {
-                            log("invalid response");
                         }
                     }
-                }
-            } else if let rst = data.getItem(name: OmniverseInformation.item_err) {
-                if let val = rst.value as? UInt8 {
-                    if let context = ContextKeeper.getContext() {
-                        log("Receiving from chain: ".concat(context.fromChain));
-                        log("Receiving session id is: ".concat(context.session.id.toString()));
-                        if let requestRecRef: &[RequestRecord] = (&self.recorder[context.fromChain] as &[RequestRecord]?) {
-                            var idx = 0;
-                            while idx < requestRecRef.length {
-                                if requestRecRef[idx].sessionID == context.session.id {
-                                    requestRecRef[idx].setErr(err: val);
-                                    break;
+                } else if OmniverseInformation.remoteError == context.session.type {
+                    // remote invocation failed
+                    if let rst = data.getItem(name: OmniverseInformation.item_err) {
+                        if let err = rst.value as? UInt8 {
+                            if let requestRecRef: &[RequestRecord] = (&self.recorder[context.fromChain] as &[RequestRecord]?) {
+                                var idx = 0;
+                                while idx < requestRecRef.length {
+                                    if requestRecRef[idx].sessionID == context.session.id {
+                                        requestRecRef[idx].setErr(err: err);
+                                        log("The error is: ".concat(err.toString()));
+                                        break;
+                                    }
+                                    
+                                    idx = idx + 1;
                                 }
-                                
-                                idx = idx + 1;
                             }
-                        } else {
-                            log("invalid response");
                         }
                     }
                 }
@@ -130,6 +131,7 @@ pub contract Cocomputation {
 
         pub fun callMe(data: MessageProtocol.MessagePayload) {
             // panic("Just test error remote call");
+            ///*
             if let context = ContextKeeper.getContext() {
                 if let item = data.getItem(name: "nums") {
                     var sum: UInt32 = 0;
@@ -144,13 +146,10 @@ pub contract Cocomputation {
                                                                     value: sum);
                     msgPL.addItem(item: msgItem!);
 
-                    SDKUtility.respondOut(toChain: context.fromChain, 
-                                        sqos: context.sqos, 
-                                        contractName: context.sender, 
-                                        actionName: context.session.callback!, 
-                                        data: msgPL);
+                    SDKUtility.respondOut(data: msgPL);
                 }
             }
+            //*/
         }
     }
 
