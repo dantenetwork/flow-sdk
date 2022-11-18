@@ -67,6 +67,23 @@ pub contract SDKUtility {
         return self.self_message_send_out(msg: msg);
     }
 
+    access(account) fun respondOut(data: MessageProtocol.MessagePayload) {
+        if let context = ContextKeeper.getContext() {
+            let msg = SentMessageContract.msgToSubmit(toChain: context.fromChain, 
+                                                    sqos: context.sqos, 
+                                                    contractName: context.sender, 
+                                                    actionName: context.session.callback!, 
+                                                    data: data, 
+                                                    callType: 3, 
+                                                    callback: nil, 
+                                                    commitment: nil, 
+                                                    answer: nil);
+            self.self_message_send_out(msg: msg);
+        } else {
+            panic("`context` not found. This may not be an atomic response.")
+        }
+    }
+
     access(account) fun self_message_send_out(msg: SentMessageContract.msgToSubmit): ContextKeeper.Context? {
         let submitterRef = self.account.borrow<&SentMessageContract.Submitter>(from: /storage/msgSubmitter)!;
         return submitterRef.submitWithAuth(msg, 
