@@ -17,8 +17,7 @@ transaction(){
 
     execute {
         if let recvRef = self.signer.borrow<&ReceivedMessageContract.ReceivedMessageVault>(from: /storage/receivedMessageVault) {
-            let u32bytes = UInt32(60).toBigEndianBytes();
-            let item = MessageProtocol.SQoSItem(type: MessageProtocol.SQoSType.Challenge, value: u32bytes);
+            let item = MessageProtocol.SQoSItem(type: MessageProtocol.SQoSType.Reveal, value: []);
             recvRef.addSQoSItem(item: item);
         }
     }
