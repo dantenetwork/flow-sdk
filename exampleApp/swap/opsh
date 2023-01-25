@@ -1,0 +1,4 @@
+
+# test the functions of the swap
+flow scripts execute ./scripts/swapTest.cdc 0x01cf0e2f2f715450
+
