@@ -92,4 +92,21 @@ pub contract SDKUtility {
                                     oSubmitterAddr: self.account.address, 
                                     slink: "msgSubmitter");
     }
+
+    /////////////////////////////////////////////////////////////////////
+    /// SQoS
+    access(account) fun set_sqos(sqos: MessageProtocol.SQoS) {
+        let recverRef = self.account.borrow<&ReceivedMessageContract.ReceivedMessageVault>(from: /storage/receivedMessageVault)!;
+        recverRef.setSQoS(sqos: sqos);
+    }
+
+    access(account) fun add_sqos_item(item: MessageProtocol.SQoSItem) {
+        let recverRef = self.account.borrow<&ReceivedMessageContract.ReceivedMessageVault>(from: /storage/receivedMessageVault)!;
+        recverRef.addSQoSItem(item: item);
+    }
+
+    access(account) fun delete_sqos_item(type: MessageProtocol.SQoSType) {
+        let recverRef = self.account.borrow<&ReceivedMessageContract.ReceivedMessageVault>(from: /storage/receivedMessageVault)!;
+        recverRef.deleteSQoSItem(type: type);
+    }
 }
