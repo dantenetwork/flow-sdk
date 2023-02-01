@@ -16,3 +16,6 @@ flow scripts execute ./scripts/getComputeTasks.cdc 0xc133efc4b43676a0 -n testnet
 
 # clear resources
 flow transactions send ./transactions/clearResources.cdc --signer testnet-account -n testnet
+
+# delete SQoS item
+flow transactions send ./transactions/deleteSQoSItem.cdc --signer emulator-Alice 0
