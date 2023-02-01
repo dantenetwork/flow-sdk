@@ -274,5 +274,5 @@ flow scripts execute ./scripts/checkNFT.cdc <your account, e.g., 0x86fc6f40cd9f9
 
 ## [Swap Demo](./exampleApp/swap)
 
-The details of the swap demo could be found in the [related repo](https://github.com/dantenetwork/cadence-contracts/blob/SQoS/omniverseSwap/README.md), and This is not repeated here.  
+The details of the swap demo could be found in the [related repo](https://github.com/dantenetwork/cadence-contracts/blob/SQoS/omniverseSwap/README.md), and this is not repeated here.  
 
