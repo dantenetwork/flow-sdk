@@ -6,22 +6,23 @@ More details can be seen at [High-Level-API](#high-level-api) and [Low-Level-API
 ## Index
 * [Environment](#environment)
 * [High-Level API](#high-level-api)
+    - [SQoS](#high-level-sqos-apis)
 * [Basic Tools](#basic-tools)
 * [Low-Level API](#low-level-api)
+    - [SQoS](#low-level-sqos-apis)
 * [Omnichain NFT](#omnichain-nft)
 * [Examples](#examples)
 
 ## Environment
 ### Deployment
-#### Testnet
-* Officially, we have deployed the Protocol Stack at `0x5f37faed5f558aca` including the [Dante Protocol Stack](https://github.com/dantenetwork/cadence-contracts) and [Omnichain NFT Infrastructure](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
-* We also deploy the Protocol Stack at [0x2999fe13d3CAa63C0bC523E8D5b19A265637dbd2](https://github.com/dantenetwork/solidity-contract-template/tree/flow-rinkeby#cross-chain-contract-address) on Rinkeby for dev-test. If you want to build your own Omnichain smart contracts on Rinkeby, you can see more details at [solidity sdk tutorial](https://github.com/dantenetwork/solidity-contract-template/tree/flow-rinkeby).
-* As Opensea does not supprot Rinkeby currently, we also deployed the Protocol Stack at `0xf61C4699B99d1988EB235AF06F270029D9Ed3b63` on PlatON, and use [NFTScan](https://platon.nftscan.com/) instead. 
+#### **Testnet**
+* Officially, we have provided the details of the [Testnet of Dante](https://github.com/dantenetwork/testnet) 
 
 **Note that the `testnet-account` in [flow.json](./flow.json) is just for dev-testing, which may have already been used. So remember to create your own account to make operation on Testnet. You can follow this [tutorial](https://developers.flow.com/tools/flow-cli/create-accounts) to create a new account on Testnet and fund faucet [here](https://testnet-faucet.onflow.org/fund-account)** 
 
-#### Emulator
-As an Omnichain infrastructure, it's necessary to cooperate with other chains and in order to test in the local environment, there needs a simulator. Currently, the simulator is under developing. So we recommend you to choose the Testnet version to develop your dApps.
+#### **Emulator**
+As an Omnichain infrastructure, it's necessary to cooperate with other chains and in order to test in the local environment, there needs a simulator.  
+The simulator could be found [here](https://github.com/dantenetwork/flow-off-chain), which is really a powerful simulator covering all of the simulation of the important SQoS items.  
 
 ## High-Level API
 The high-level api provides a very convenient way to create `resources`. When the contract [SDKUtility](./contracts/SDKUtility.cdc) is deployed with your own account, all omnichain resources including `ReceivedMessageVault`, `SentMessageVault`, and `Submitter` are created, saved and registered by the constructor. More over, `SDKUtility` provides some methods with `access(account)` to help developers implement cross-chain operations. The `access(account)` means only the deployed account related smart contracts and resources has the permission to call these methods.  
@@ -33,6 +34,20 @@ Both `callOut` and `sendOut` return a [ContextKeeper.Context](https://github.com
 The two above methods in `SDKUtility` are responsible for sending invocations or messages out, and we still need methods to receive messages. In resource-oriented programming we need to bind receiving to every concrete resource, that is, every resource who wants to receive outside invocations or messages needs to implement the interface [ReceivedMessageInterface.Callee](https://github.com/dantenetwork/cadence-contracts/blob/b75d47440cf1a7e1246217c6a2fa0381a70d7bb5/contracts/ReceivedMessageContract.cdc#L20). Examples can be fount both at [Greetings](./exampleApp/greetings/contracts/Greetings.cdc) and [Cocomputation](./exampleApp/computation/contracts/Cocomputation.cdc).  
 
 Generally, the example [Cocomputation](./exampleApp/computation/) is a typical use case of the high-level api.  
+
+### **High-level SQoS APIs**
+
+Actually, the SDK for SQoS is very simple, as the complex algorithms are implemented underlying.  
+
+- [set_sqos](./contracts/SDKUtility.cdc#L98). This will **overwrite** all the SQoS items.  
+- [add_sqos_item](./contracts/SDKUtility.cdc#L103)
+- [delete_sqos_item](./contracts/SDKUtility.cdc#L108)
+
+The abilities of the SQoS items could be found in Dante's [technology white paper](https://github.com/dantenetwork/Pitch-Deck/blob/main/Dante%20Network%EF%BC%9AThe%20_Internet%20protocol%20stack_%20of%20Web3.pdf) at the `Chapter 3.1`.  
+The Demo example of the SQoS items could be found in SQoS Demos: 
+- [Error Rollback](https://github.com/dantenetwork/cadence-contracts/blob/SQoS/test/SQoS-Test/error-rollback.md)
+- [Hidden & Reveal](https://github.com/dantenetwork/cadence-contracts/blob/SQoS/test/SQoS-Test/hidden-reveal.md)
+- [Challenge](https://github.com/dantenetwork/cadence-contracts/blob/SQoS/test/SQoS-Test/challenge.md)
 
 ## Basic Tools
 Note that remember to switch the import address when swiching between `emulator` and `testnet`.
@@ -104,6 +119,14 @@ flow transactions send ./transactions/destroySubmitter.cdc --signer <your accoun
     * @param `alink`: the public link of the `SentMessageVault` resource, which is default to be *sentMessageVault*
     * @param `oSubmitterAddr`: The owner address of the `Submitter`
     * @param `slink`: the `Submitter`'s public link, which is default to be *msgSubmitter*
+
+### **Low-level SQoS APIs**
+
+The `Low-level SQoS APIs` are also very simple, and some examples could be found as below:  
+
+- [set Hidden & Reveal](./exampleApp/computation/transactions/setHiddenReveal.cdc)
+- [set challenge](./exampleApp/computation/transactions/setOptimistic.cdc)
+- [delete a certain SQoS item](./exampleApp/computation/transactions/deleteSQoSItem.cdc) 
 
 ## Omniverse NFT
 You can find detailed introduction of `Omniverse NFT` [here](https://github.com/dantenetwork/cadence-contracts/tree/main/omniverseNFT).  
@@ -248,4 +271,8 @@ flow scripts execute ./scripts/queryNFTIDs.cdc <your account, e.g., 0x86fc6f40cd
 flow scripts execute ./scripts/checkNFT.cdc <your account, e.g., 0x86fc6f40cd9f9c66> -n testnet
 
 ```
+
+## [Swap Demo](./exampleApp/swap)
+
+The details of the swap demo could be found in the [related repo](https://github.com/dantenetwork/cadence-contracts/blob/SQoS/omniverseSwap/README.md), and This is not repeated here.  
 
