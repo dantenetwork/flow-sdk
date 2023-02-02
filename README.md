@@ -4,14 +4,15 @@ This is the SDK with which developers can easily build their Omnichain dApps bas
 More details can be seen at [High-Level-API](#high-level-api) and [Low-Level-API](#low-level-api), and we provide two typical examples at [examples](#examples);
 
 ## Index
-* [Environment](#environment)
-* [High-Level API](#high-level-api)
+- [Environment](#environment)
+- [High-Level API](#high-level-api)
     - [SQoS (milestone 2)](#high-level-sqos-apis)
-* [Basic Tools](#basic-tools)
-* [Low-Level API](#low-level-api)
+- [Basic Tools](#basic-tools)
+- [Low-Level API](#low-level-api)
     - [SQoS (milestone 2)](#low-level-sqos-apis)
-* [Omnichain NFT](#omnichain-nft)
-* [Examples](#examples)
+- [Off-Chain Simulator (milestone 2)](#emulator)
+- [Omnichain NFT](#omnichain-nft)
+- [Examples](#examples)
     - [Swap Demo (milestone 2)](#swap-demo)
 
 ## Environment
